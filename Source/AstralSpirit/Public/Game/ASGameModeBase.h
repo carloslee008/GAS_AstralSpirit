@@ -3,16 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/ASCharacterBase.h"
-#include "ASCharacter.generated.h"
+#include "GameFramework/GameModeBase.h"
+#include "ASGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API AASCharacter : public AASCharacterBase
+class ASTRALSPIRIT_API AASGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
-	AASCharacter();
+	
 };
