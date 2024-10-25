@@ -4,14 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Character/ASCharacterBase.h"
+#include "Interaction/EnemyInterface.h"
 #include "ASEnemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase
+class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
 };

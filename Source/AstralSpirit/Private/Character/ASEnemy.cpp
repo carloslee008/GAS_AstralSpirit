@@ -3,3 +3,10 @@
 
 #include "Character/ASEnemy.h"
 
+void AASEnemy::HighlightActor()
+{
+}
+
+void AASEnemy::UnHighlightActor()
+{
+}
