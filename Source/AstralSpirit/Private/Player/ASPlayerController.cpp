@@ -4,10 +4,67 @@
 #include "Player/ASPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 AASPlayerController::AASPlayerController()
 {
 	bReplicates = true;
+}
+
+void AASPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	CursorTrace();
+}
+
+void AASPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	if (!CursorHit.bBlockingHit) return;
+	LastActor = ThisActor;
+	ThisActor = CursorHit.GetActor();
+
+	/**
+	 * Line trace from cursor possible scenarios:
+	 * A. Both LastActor && ThisActor are NULL
+	 * - Do nothing
+	 * B. LastActor is NULL && ThisActor is VALID
+	 * - Highlight
+	 * C. LastActor is VALID && ThisActor is NULL
+	 * - Unhighlight
+	 * D. Both Actors are VALID, but different actors
+	 * - Unhighlight LastActor, Highlight ThisActor
+	 * E. Both Actors are VALID, same actor
+	 * - Do nothing
+	 */
+
+	if (LastActor == nullptr)
+	{
+		// Case B
+		if (ThisActor)
+		{
+			ThisActor->HighlightActor();
+		}
+	}
+	else
+	{
+		// Case C
+		if (ThisActor == nullptr)
+		{
+			LastActor->UnHighlightActor();
+		}
+		else
+		{
+			if (ThisActor != LastActor)
+			{
+				// Case D
+				LastActor->UnHighlightActor();
+				ThisActor->HighlightActor();
+			}
+		}
+	}
 }
 
 void AASPlayerController::BeginPlay()

@@ -5,8 +5,10 @@
 
 void AASEnemy::HighlightActor()
 {
+	bHighlighted = true;
 }
 
 void AASEnemy::UnHighlightActor()
 {
+	bHighlighted = false;
 }
