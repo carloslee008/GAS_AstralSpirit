@@ -14,10 +14,9 @@ UCLASS()
 class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
+	AASEnemy();
 public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bHighlighted = false;
+	
 };
