@@ -13,8 +13,12 @@ AASCharacterBase::AASCharacterBase()
 
 }
 
+UAbilitySystemComponent* AASCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 void AASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }

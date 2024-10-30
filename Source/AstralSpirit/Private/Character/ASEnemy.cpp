@@ -3,11 +3,17 @@
 
 #include "Character/ASEnemy.h"
 
+#include "AbilitySystemComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 
 AASEnemy::AASEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);
+	
+	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
 }
 
 void AASEnemy::HighlightActor()
