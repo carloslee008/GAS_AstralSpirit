@@ -17,6 +17,12 @@ AASEnemy::AASEnemy()
 	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
 }
 
+void AASEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
 void AASEnemy::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);

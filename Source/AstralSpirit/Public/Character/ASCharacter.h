@@ -15,4 +15,8 @@ class ASTRALSPIRIT_API AASCharacter : public AASCharacterBase
 	GENERATED_BODY()
 public:
 	AASCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+private:
+	void InitAbilityActorInfo();
 };
