@@ -4,6 +4,7 @@
 #include "Player/ASPlayerState.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/ASAttributeSet.h"
 
 AASPlayerState::AASPlayerState()
 {
@@ -11,7 +12,7 @@ AASPlayerState::AASPlayerState()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	AttributeSet = CreateDefaultSubobject<UASAttributeSet>("AttributeSet");
 	
 	NetUpdateFrequency = 100.f;
 }

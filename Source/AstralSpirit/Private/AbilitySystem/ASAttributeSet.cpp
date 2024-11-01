@@ -2,19 +2,18 @@
 
 
 #include "AbilitySystem/ASAttributeSet.h"
-
-#include "AbilitySystemComponent.h"
 #include "Net/UnrealNetwork.h"
 
 UASAttributeSet::UASAttributeSet()
 {
+	InitHealth(100.f);
 }
 
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// Register Variables for Replication
+	// Register variables for replication
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Mana, COND_None, REPNOTIFY_Always);

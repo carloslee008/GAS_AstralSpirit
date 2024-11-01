@@ -4,6 +4,7 @@
 #include "Character/ASEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/ASAttributeSet.h"
 #include "AstralSpirit/AstralSpirit.h"
 
 AASEnemy::AASEnemy()
@@ -14,7 +15,7 @@ AASEnemy::AASEnemy()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
-	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	AttributeSet = CreateDefaultSubobject<UASAttributeSet>("AttributeSet");
 }
 
 void AASEnemy::BeginPlay()
