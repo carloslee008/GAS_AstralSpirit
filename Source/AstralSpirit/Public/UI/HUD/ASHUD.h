@@ -6,6 +6,10 @@
 #include "GameFramework/HUD.h"
 #include "ASHUD.generated.h"
 
+struct FWidgetControllerParams;
+class UAttributeSet;
+class UAbilitySystemComponent;
+class UOverlayWidgetController;
 class UASUserWidget;
 /**
  * 
@@ -19,12 +23,21 @@ public:
 	UPROPERTY()
 	TObjectPtr<UASUserWidget> OverlayWidget;
 
+	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
+
+	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+
 protected:
-	virtual void BeginPlay() override;
 
 private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UASUserWidget> OverlayWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 	
 };

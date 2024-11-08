@@ -73,8 +73,11 @@ void AASPlayerController::BeginPlay()
 	check(ASContext);
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(ASContext, 0);
+	// If locally controlled when in multiplayer
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(ASContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;

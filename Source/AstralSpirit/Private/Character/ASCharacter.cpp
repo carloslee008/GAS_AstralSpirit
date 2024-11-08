@@ -5,7 +5,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
+#include "UI/HUD/ASHUD.h"
 
 AASCharacter::AASCharacter()
 {
@@ -42,4 +44,13 @@ void AASCharacter::InitAbilityActorInfo()
 	ASPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(ASPlayerState, this);
 	AbilitySystemComponent = ASPlayerState->GetAbilitySystemComponent();
 	AttributeSet = ASPlayerState->GetAttributeSet();
+
+	// For local player when in multiplayer
+	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
+	{
+		if (AASHUD* ASHUD = Cast<AASHUD>(ASPlayerController->GetHUD()))
+		{
+			ASHUD->InitOverlay(ASPlayerController, ASPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
 }
