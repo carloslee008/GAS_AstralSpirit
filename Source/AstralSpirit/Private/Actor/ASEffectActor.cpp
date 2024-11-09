@@ -29,7 +29,8 @@ void AASEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		const UASAttributeSet* ASAttributeSet = Cast<UASAttributeSet>(ASCInterface->GetAbilitySystemComponent()->GetAttributeSet(UASAttributeSet::StaticClass()));
 		UASAttributeSet* MutableASAttributeSet = const_cast<UASAttributeSet*>(ASAttributeSet);
-		MutableASAttributeSet->SetHealth(ASAttributeSet->GetHealth() + 20.f);
+		MutableASAttributeSet->SetHealth(ASAttributeSet->GetHealth() + 25.f);
+		MutableASAttributeSet->SetMana(ASAttributeSet->GetMana() - 25.f);
 		Destroy();
 	}
 }
