@@ -14,3 +14,7 @@ void UASWidgetController::SetWidgetControllerParams(const FWidgetControllerParam
 void UASWidgetController::BroadcastInitialValues()
 {
 }
+
+void UASWidgetController::BindCallbacksToDependencies()
+{
+}
