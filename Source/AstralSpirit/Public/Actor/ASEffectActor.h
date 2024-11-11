@@ -7,7 +7,6 @@
 #include "ASEffectActor.generated.h"
 
 class UGameplayEffect;
-class USphereComponent;
 
 UCLASS()
 class ASTRALSPIRIT_API AASEffectActor : public AActor
@@ -21,9 +20,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToActor(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	void ApplyEffectToActor(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 	
-	UPROPERTY(EditAnywhere, Category="Effects")
-	TSubclassOf<UGameplayEffect> InstantGameplayEffectType;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effects")
+	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
 
 };
