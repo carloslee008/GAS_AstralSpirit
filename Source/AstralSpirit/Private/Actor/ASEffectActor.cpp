@@ -37,10 +37,26 @@ void AASEffectActor::ApplyEffectToActor(AActor* TargetActor, TSubclassOf<UGamepl
 
 void AASEffectActor::OnOverlap(AActor* TargetActor)
 {
+	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToActor(TargetActor, InstantGameplayEffectClass);
+	}
+	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToActor(TargetActor, DurationGameplayEffectClass);
+	}
 }
 
 void AASEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToActor(TargetActor, InstantGameplayEffectClass);
+	}
+	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToActor(TargetActor, DurationGameplayEffectClass);
+	}
 }
 
 
