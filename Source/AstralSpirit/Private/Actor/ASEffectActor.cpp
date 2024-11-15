@@ -32,7 +32,7 @@ void AASEffectActor::ApplyEffectToActor(AActor* TargetActor, TSubclassOf<UGamepl
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
 	// Get what object caused this effect
 	EffectContextHandle.AddSourceObject(this);
-	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
 	TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 }
 
