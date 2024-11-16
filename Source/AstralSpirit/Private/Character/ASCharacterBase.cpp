@@ -22,3 +22,7 @@ void AASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void AASCharacterBase::InitAbilityActorInfo()
+{
+}

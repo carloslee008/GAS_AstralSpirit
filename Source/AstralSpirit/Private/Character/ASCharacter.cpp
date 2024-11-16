@@ -4,6 +4,7 @@
 #include "Character/ASCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
@@ -42,6 +43,7 @@ void AASCharacter::InitAbilityActorInfo()
 	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
 	check(ASPlayerState);
 	ASPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(ASPlayerState, this);
+	Cast<UASAbilitySystemComponent>(ASPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
 	AbilitySystemComponent = ASPlayerState->GetAbilitySystemComponent();
 	AttributeSet = ASPlayerState->GetAttributeSet();
 
