@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "ASAbilitySystemComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */)
+
 /**
  * 
  */
@@ -15,6 +17,8 @@ class ASTRALSPIRIT_API UASAbilitySystemComponent : public UAbilitySystemComponen
 	GENERATED_BODY()
 public:
 	void AbilityActorInfoSet();
+
+	FEffectAssetTags EffectAssetTags;
 protected:
 	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 };
