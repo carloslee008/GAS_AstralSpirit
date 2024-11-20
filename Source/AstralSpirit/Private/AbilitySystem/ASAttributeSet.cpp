@@ -19,8 +19,13 @@ UASAttributeSet::UASAttributeSet()
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
+	
 	// Register variables for replication
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Strength, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Dexterity, COND_None, REPNOTIFY_Always);
+	
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Mana, COND_None, REPNOTIFY_Always);
@@ -99,6 +104,21 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 	
+}
+
+void UASAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, Strength, OldStrength);
+}
+
+void UASAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, Intelligence, OldIntelligence);
+}
+
+void UASAttributeSet::OnRep_Dexterity(const FGameplayAttributeData& OldDexterity) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, Dexterity, OldDexterity);
 }
 
 void UASAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
