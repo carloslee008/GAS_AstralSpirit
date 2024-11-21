@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystem/ASAbilitySystemComponent.h"
 
 // Sets default values
 AASEffectActor::AASEffectActor()
