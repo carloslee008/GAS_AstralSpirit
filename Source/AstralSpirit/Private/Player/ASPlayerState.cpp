@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 AASPlayerState::AASPlayerState()
 {
@@ -18,7 +19,18 @@ AASPlayerState::AASPlayerState()
 	NetUpdateFrequency = 100.f;
 }
 
+void AASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AASPlayerState, Level);
+}
+
 UAbilitySystemComponent* AASPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AASPlayerState::OnRep_Level(int32 OldLevel)
+{
 }
