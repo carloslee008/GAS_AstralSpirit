@@ -11,9 +11,7 @@
 UASAttributeSet::UASAttributeSet()
 {
 	InitHealth(10.f);
-	InitMaxHealth(100.f);
 	InitMana(15.f);
-	InitMaxMana(50.f);
 }
 
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -28,15 +26,18 @@ void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Dexterity, COND_None, REPNOTIFY_Always);
 
 	// Secondary Attributes
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, ManaRegeneration, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, CriticalHitChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, CriticalHitDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, DodgeChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, ColdResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, LightningResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, PoisonResistance, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 
 	// Vital Attributes
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Health, COND_None, REPNOTIFY_Always);
@@ -141,6 +142,16 @@ void UASAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) co
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, MaxMana, OldMaxMana);
 }
 
+void UASAttributeSet::OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, HealthRegeneration, OldHealthRegeneration);
+}
+
+void UASAttributeSet::OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, ManaRegeneration, OldManaRegeneration);
+}
+
 void UASAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, Armor, OldArmor);
@@ -154,6 +165,11 @@ void UASAttributeSet::OnRep_CriticalHitChance(const FGameplayAttributeData& OldC
 void UASAttributeSet::OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, CriticalHitDamage, OldCriticalHitDamage);
+}
+
+void UASAttributeSet::OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, DodgeChance, OldDodgeChance);
 }
 
 void UASAttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const

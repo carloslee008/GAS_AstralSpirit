@@ -55,5 +55,5 @@ void AASCharacter::InitAbilityActorInfo()
 			ASHUD->InitOverlay(ASPlayerController, ASPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
-	InitializePrimaryAttributes();
+	InitializeDefaultAttributes();
 }

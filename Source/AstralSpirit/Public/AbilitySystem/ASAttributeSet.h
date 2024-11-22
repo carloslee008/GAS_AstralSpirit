@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
-#include "GameplayEffectExtension.h"
 #include "ASAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -89,6 +88,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Vital Attributes")
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UASAttributeSet, MaxMana);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_HealthRegeneration, Category="Vital Attributes")
+	FGameplayAttributeData HealthRegeneration;
+	ATTRIBUTE_ACCESSORS(UASAttributeSet, HealthRegeneration);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_ManaRegeneration, Category="Vital Attributes")
+	FGameplayAttributeData ManaRegeneration;
+	ATTRIBUTE_ACCESSORS(UASAttributeSet, ManaRegeneration);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Armor, Category="Primary Attributes")
 	FGameplayAttributeData Armor;
@@ -101,6 +108,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_CriticalHitDamage, Category="Primary Attributes")
 	FGameplayAttributeData CriticalHitDamage;
 	ATTRIBUTE_ACCESSORS(UASAttributeSet, CriticalHitDamage);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_DodgeChance, Category="Primary Attributes")
+	FGameplayAttributeData DodgeChance;
+	ATTRIBUTE_ACCESSORS(UASAttributeSet, DodgeChance);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_FireResistance, Category="Primary Attributes")
 	FGameplayAttributeData FireResistance;
@@ -137,18 +148,18 @@ public:
 	
 	UFUNCTION()
 	void OnRep_Dexterity(const FGameplayAttributeData& OldDexterity) const;
-	
-	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
-
-	UFUNCTION()
-	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
-
+	
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+	
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+	
+	UFUNCTION()
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
 
 	UFUNCTION()
 	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
@@ -158,6 +169,9 @@ public:
 
 	UFUNCTION()
 	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
+
+	UFUNCTION()
+	void OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance) const;
 
 	UFUNCTION()
 	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;
@@ -170,6 +184,12 @@ public:
 	
 	UFUNCTION()
 	void OnRep_PoisonResistance(const FGameplayAttributeData& OldPoisonResistance) const;
+
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
+	
+	UFUNCTION()
+	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
 private:
 
