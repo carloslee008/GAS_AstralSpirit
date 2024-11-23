@@ -10,8 +10,6 @@
 
 UASAttributeSet::UASAttributeSet()
 {
-	InitHealth(10.f);
-	InitMana(15.f);
 }
 
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
