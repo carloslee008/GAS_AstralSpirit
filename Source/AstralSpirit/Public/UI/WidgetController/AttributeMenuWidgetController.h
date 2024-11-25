@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class ASTRALSPIRIT_API UAttributeMenuWidgetController : public UASWidgetController
 {
 	GENERATED_BODY()
