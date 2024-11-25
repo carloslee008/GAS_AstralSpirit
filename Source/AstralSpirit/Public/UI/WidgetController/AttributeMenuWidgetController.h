@@ -6,6 +6,10 @@
 #include "UI/WidgetController/ASWidgetController.h"
 #include "AttributeMenuWidgetController.generated.h"
 
+class UAttributeInfo;
+struct FASAttributeInfo;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FASAttributeInfo&, Info);
+
 /**
  * 
  */
@@ -17,5 +21,12 @@ class ASTRALSPIRIT_API UAttributeMenuWidgetController : public UASWidgetControll
 public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
-	
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
+	FAttributeInfoSignature AttributeInfoDelegate;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAttributeInfo> AttributeInfo;
 };
