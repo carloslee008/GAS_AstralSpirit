@@ -42,11 +42,11 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	
 	GameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.HealthRegeneration"),
-	 FString("Health regenerated rate per 1 second"));
+	 FString("Amount of health regenerated per 1 second"));
 	
 	GameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.ManaRegeneration"),
-	 FString("Mana regenerated per 1 second"));
+	 FString("Amount of mana regenerated per 1 second"));
 	
 	GameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.CriticalHitChance"),
