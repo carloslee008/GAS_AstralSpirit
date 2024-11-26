@@ -4,12 +4,18 @@
 #include "AbilitySystem/ASAttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ASGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
 
 UASAttributeSet::UASAttributeSet()
 {
+	const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
+	
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Dexterity, GetDexterityAttribute);
 }
 
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
