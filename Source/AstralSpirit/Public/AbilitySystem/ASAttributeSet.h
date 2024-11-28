@@ -115,6 +115,10 @@ public:
 	FGameplayAttributeData CriticalHitDamage;
 	ATTRIBUTE_ACCESSORS(UASAttributeSet, CriticalHitDamage);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_BlockChance, Category="Primary Attributes")
+	FGameplayAttributeData BlockChance;
+	ATTRIBUTE_ACCESSORS(UASAttributeSet, BlockChance);
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_DodgeChance, Category="Primary Attributes")
 	FGameplayAttributeData DodgeChance;
 	ATTRIBUTE_ACCESSORS(UASAttributeSet, DodgeChance);
@@ -175,7 +179,10 @@ public:
 
 	UFUNCTION()
 	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
-
+	
+	UFUNCTION()
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;
+	
 	UFUNCTION()
 	void OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance) const;
 

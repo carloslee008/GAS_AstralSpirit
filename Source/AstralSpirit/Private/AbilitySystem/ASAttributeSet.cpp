@@ -12,10 +12,27 @@
 UASAttributeSet::UASAttributeSet()
 {
 	const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
-	
+
+	/* Primary Attributes */
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Dexterity, GetDexterityAttribute);
+
+	/* Secondary Attributes */
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_DodgeChance, GetDodgeChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_FireResistance, GetFireResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_ColdResistance, GetColdResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_LightningResistance, GetLightningResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_PoisonResistance, GetPoisonResistanceAttribute);
+
 }
 
 void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -37,6 +54,7 @@ void UASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, CriticalHitChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, CriticalHitDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, DodgeChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UASAttributeSet, ColdResistance, COND_None, REPNOTIFY_Always);
@@ -169,6 +187,11 @@ void UASAttributeSet::OnRep_CriticalHitChance(const FGameplayAttributeData& OldC
 void UASAttributeSet::OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, CriticalHitDamage, OldCriticalHitDamage);
+}
+
+void UASAttributeSet::OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UASAttributeSet, BlockChance, OldBlockChance);
 }
 
 void UASAttributeSet::OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance) const

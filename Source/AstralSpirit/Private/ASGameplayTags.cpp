@@ -35,10 +35,6 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.MaxMana"),
 	 FString("Max Mana"));
-
-	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.Armor"),
-	 FString("Reduces physical damage taken"));
 	
 	GameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.HealthRegeneration"),
@@ -47,6 +43,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.ManaRegeneration"),
 	 FString("Amount of mana regenerated per 1 second"));
+
+	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Attributes.Secondary.Armor"),
+	 FString("Reduces physical damage taken"));
 	
 	GameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Attributes.Secondary.CriticalHitChance"),
