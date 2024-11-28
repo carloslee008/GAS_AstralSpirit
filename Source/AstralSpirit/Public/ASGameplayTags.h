@@ -35,6 +35,15 @@ public:
 	FGameplayTag Attributes_Secondary_ColdResistance;
 	FGameplayTag Attributes_Secondary_LightningResistance;
 	FGameplayTag Attributes_Secondary_PoisonResistance;
+
+	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_RMB;
+	FGameplayTag InputTag_1;
+	FGameplayTag InputTag_2;
+	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_4;
+	FGameplayTag InputTag_5;
+	FGameplayTag InputTag_6;
 	
 protected:
 
