@@ -3,7 +3,7 @@
 
 #include "Player/ASPlayerController.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "Input/ASInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AASPlayerController::AASPlayerController()
@@ -67,6 +67,21 @@ void AASPlayerController::CursorTrace()
 	}
 }
 
+void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+
+void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+}
+
+void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+}
+
 void AASPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -92,9 +107,11 @@ void AASPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UASInputComponent* ASInputComponent = CastChecked<UASInputComponent>(InputComponent);
 
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AASPlayerController::Move);
+	ASInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AASPlayerController::Move);
+
+	ASInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
 void AASPlayerController::Move(const FInputActionValue& InputActionValue)
