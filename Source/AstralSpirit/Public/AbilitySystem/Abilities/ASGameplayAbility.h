@@ -13,5 +13,9 @@ UCLASS()
 class ASTRALSPIRIT_API UASGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag StartupInputTag;
 	
 };

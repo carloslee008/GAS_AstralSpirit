@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ASPlayerController.generated.h"
 
+class UASAbilitySystemComponent;
 class UASInputConfig;
 class UInputMappingContext;
 class UInputAction;
@@ -46,5 +47,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UASInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UASAbilitySystemComponent> ASAbilitySystemComponent;
+
+	UASAbilitySystemComponent* GetASC();
 	
 };
