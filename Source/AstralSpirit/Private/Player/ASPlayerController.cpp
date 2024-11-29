@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ASGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "Components/SplineComponent.h"
 #include "Input/ASInputComponent.h"
@@ -87,8 +89,47 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	if (!GetASC()) return;
-	GetASC()->AbilityInputTagReleased(InputTag);
+	/**
+	 * For non-LMB inputs
+	 **/
+	if (!InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+		return;
+	}
+	/**
+	 * For LMB
+	 **/
+	
+	if (bIsTargeting) // If hovering
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+	}
+	else
+	{
+		APawn* ControlledPawn = GetPawn();
+		if (FollowTime <= ShortPressThreshold && ControlledPawn)
+		{
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
+			{
+				Spline->ClearSplinePoints();
+				for (const FVector& PointLoc : NavPath->PathPoints)
+				{
+					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
+					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Green, false, 5.f);
+				}
+				bAutoRunning = true;
+			}
+		}
+		FollowTime = 0.f;
+		bIsTargeting = false;
+	}
 }
 
 void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
@@ -116,7 +157,6 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		{
 			GetASC()->AbilityInputTagHeld(InputTag);
 		}
-		return;
 	}
 	else // Click to move
 	{
