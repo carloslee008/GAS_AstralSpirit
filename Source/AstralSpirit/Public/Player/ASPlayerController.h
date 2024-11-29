@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ASPlayerController.generated.h"
 
+class USplineComponent;
 class UASAbilitySystemComponent;
 class UASInputConfig;
 class UInputMappingContext;
@@ -52,5 +53,16 @@ private:
 	TObjectPtr<UASAbilitySystemComponent> ASAbilitySystemComponent;
 
 	UASAbilitySystemComponent* GetASC();
+
+	FVector CachedDestination = FVector::ZeroVector;
+	float FollowTime = 0.f;
+	float ShortPressThreshold = 0.f;
+	bool bAutoRunning = false;
+	bool bIsTargeting = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+
+	TObjectPtr<USplineComponent> Spline;
 	
 };

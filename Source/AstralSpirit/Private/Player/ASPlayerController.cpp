@@ -4,14 +4,19 @@
 #include "Player/ASPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ASGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
 #include "Input/ASInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AASPlayerController::AASPlayerController()
 {
 	bReplicates = true;
+
+	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
+	
 }
 
 void AASPlayerController::Tick(float DeltaSeconds)
@@ -72,7 +77,12 @@ void AASPlayerController::CursorTrace()
 
 void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	// GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+	if (InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
+	{
+		bIsTargeting = ThisActor ? true : false; // If hovering highlighted actor, true
+		bAutoRunning = false;
+	}
+	
 }
 
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -83,8 +93,46 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	if (!GetASC()) return;
-	GetASC()->AbilityInputTagHeld(InputTag);
+	/**
+	 * For non-LMB inputs
+	 **/
+	
+	if (!InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(InputTag);
+		}
+		return;
+	}
+	
+	/**
+	 * For LMB
+	 **/
+	
+	if (bIsTargeting) // if hovered
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(InputTag);
+		}
+		return;
+	}
+	else // Click to move
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+
+		FHitResult Hit;
+		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		{
+			CachedDestination = Hit.ImpactPoint;
+			if (APawn* ControlledPawn = GetPawn())
+			{
+				const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+				ControlledPawn->AddMovementInput(WorldDirection);
+			}
+		}
+	}
 }
 
 UASAbilitySystemComponent* AASPlayerController::GetASC()
