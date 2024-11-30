@@ -16,9 +16,7 @@
 AASPlayerController::AASPlayerController()
 {
 	bReplicates = true;
-
 	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
-	
 }
 
 void AASPlayerController::PlayerTick(float DeltaTime)
@@ -36,6 +34,7 @@ void AASPlayerController::AutoRun()
 	{
 		// Closest location on the spline to ControlledPawn
 		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		
 		// Direction to spline
 		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
 		ControlledPawn->AddMovementInput(Direction);
@@ -50,7 +49,6 @@ void AASPlayerController::AutoRun()
 
 void AASPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = ThisActor;
@@ -69,31 +67,11 @@ void AASPlayerController::CursorTrace()
 	 * E. Both Actors are VALID, same actor
 	 * - Do nothing
 	 */
-
-	if (LastActor == nullptr)
+	
+	if (LastActor != ThisActor)
 	{
-		// Case B
-		if (ThisActor)
-		{
-			ThisActor->HighlightActor();
-		}
-	}
-	else
-	{
-		// Case C
-		if (ThisActor == nullptr)
-		{
-			LastActor->UnHighlightActor();
-		}
-		else
-		{
-			if (ThisActor != LastActor)
-			{
-				// Case D
-				LastActor->UnHighlightActor();
-				ThisActor->HighlightActor();
-			}
-		}
+		if (ThisActor) ThisActor->HighlightActor(); // Case B and D
+		if (LastActor) LastActor->UnHighlightActor(); // Case C and D
 	}
 }
 
@@ -104,7 +82,6 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		bIsTargeting = ThisActor ? true : false; // If hovering highlighted actor, true
 		bAutoRunning = false;
 	}
-	
 }
 
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -142,7 +119,6 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				for (const FVector& PointLoc : NavPath->PathPoints)
 				{
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Green, false, 5.f);
 				}
 				// Checks to see there's at least one path point in the array
 				CachedDestination = NavPath->PathPoints.IsEmpty() ? ControlledPawn->GetActorLocation() : NavPath->PathPoints.Last(); 
@@ -159,7 +135,6 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	/**
 	 * For non-LMB inputs
 	 **/
-	
 	if (!InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
 	{
 		if (GetASC())
@@ -168,12 +143,10 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		}
 		return;
 	}
-	
 	/**
 	 * For LMB
 	 **/
-	
-	if (bIsTargeting) // if hovered
+	if (bIsTargeting) // If hovered
 	{
 		if (GetASC())
 		{
@@ -184,15 +157,14 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.ImpactPoint;
-			if (APawn* ControlledPawn = GetPawn())
-			{
-				const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-				ControlledPawn->AddMovementInput(WorldDirection);
-			}
+			CachedDestination = CursorHit.ImpactPoint;
+		}
+		if (APawn* ControlledPawn = GetPawn())
+		{
+			const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(WorldDirection);
 		}
 	}
 }
@@ -234,7 +206,6 @@ void AASPlayerController::SetupInputComponent()
 	UASInputComponent* ASInputComponent = CastChecked<UASInputComponent>(InputComponent);
 
 	ASInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AASPlayerController::Move);
-
 	ASInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
