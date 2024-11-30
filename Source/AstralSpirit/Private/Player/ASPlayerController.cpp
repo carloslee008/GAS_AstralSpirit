@@ -21,11 +21,31 @@ AASPlayerController::AASPlayerController()
 	
 }
 
-void AASPlayerController::Tick(float DeltaSeconds)
+void AASPlayerController::PlayerTick(float DeltaTime)
 {
-	Super::Tick(DeltaSeconds);
+	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+	AutoRun();
+}
+
+void AASPlayerController::AutoRun()
+{
+	if (!bAutoRunning) return;
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		// Closest location on the spline to ControlledPawn
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		// Direction to spline
+		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		ControlledPawn->AddMovementInput(Direction);
+
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if (DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+		}
+	}
 }
 
 void AASPlayerController::CursorTrace()
@@ -104,7 +124,7 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	 * For LMB
 	 **/
 	
-	if (bIsTargeting) // If hovering
+	if (bIsTargeting) // If hovering highlightable actor
 	{
 		if (GetASC())
 		{
@@ -124,6 +144,8 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Green, false, 5.f);
 				}
+				// Checks to see there's at least one path point in the array
+				CachedDestination = NavPath->PathPoints.IsEmpty() ? ControlledPawn->GetActorLocation() : NavPath->PathPoints.Last(); 
 				bAutoRunning = true;
 			}
 		}

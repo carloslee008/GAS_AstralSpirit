@@ -24,7 +24,7 @@ class ASTRALSPIRIT_API AASPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AASPlayerController();
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void PlayerTick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -64,5 +64,7 @@ private:
 	float AutoRunAcceptanceRadius = 50.f;
 
 	TObjectPtr<USplineComponent> Spline;
+
+	void AutoRun();
 	
 };
