@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
 #include "ASProjectileSpell.generated.h"
 
+class AASProjectile;
 /**
  * 
  */
@@ -16,4 +17,8 @@ class ASTRALSPIRIT_API UASProjectileSpell : public UASGameplayAbility
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AASProjectile> ProjectileClass;
+
 };

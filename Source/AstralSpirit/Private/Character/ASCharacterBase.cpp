@@ -26,6 +26,12 @@ void AASCharacterBase::BeginPlay()
 	Super::BeginPlay();
 }
 
+FVector AASCharacterBase::GetCombatSocketLocation()
+{
+	check(Weapon);
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
 void AASCharacterBase::InitAbilityActorInfo()
 {
 }
