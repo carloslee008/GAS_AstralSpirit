@@ -87,7 +87,7 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	/**
-	 * For non-LMB inputs
+	 * For non-LMB inputs, activate ability
 	 **/
 	if (!InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
 	{
@@ -97,18 +97,15 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		}
 		return;
 	}
+	
 	/**
 	 * For LMB
 	 **/
-	
-	if (bIsTargeting) // If hovering highlightable actor
+	if (GetASC())
 	{
-		if (GetASC())
-		{
-			GetASC()->AbilityInputTagReleased(InputTag);
-		}
+		GetASC()->AbilityInputTagReleased(InputTag);
 	}
-	else
+	if (!bIsTargeting && !bShiftKeyDown) // Click to move if not hovering an actor or shift-clicking
 	{
 		APawn* ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
@@ -146,7 +143,7 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	/**
 	 * For LMB
 	 **/
-	if (bIsTargeting) // If hovered
+	if (bIsTargeting || bShiftKeyDown) // If hovering highlightable object OR shift-clicking
 	{
 		if (GetASC())
 		{
@@ -206,6 +203,8 @@ void AASPlayerController::SetupInputComponent()
 	UASInputComponent* ASInputComponent = CastChecked<UASInputComponent>(InputComponent);
 
 	ASInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AASPlayerController::Move);
+	ASInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AASPlayerController::ShiftPressed);
+	ASInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AASPlayerController::ShiftReleased);
 	ASInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 

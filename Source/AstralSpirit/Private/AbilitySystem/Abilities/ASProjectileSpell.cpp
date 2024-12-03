@@ -14,18 +14,23 @@ void UASProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 }
 
-void UASProjectileSpell::SpawnProjectile()
+void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
 
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
+		// Socket location
 		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+
+		// Rotation of Projectile
+		FRotator SpawnRotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+		SpawnRotation.Pitch = 0;
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
-		// TODO : Set projectile rotation
+		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 		
 		AASProjectile* Projectile = GetWorld()->SpawnActorDeferred<AASProjectile>(
 			ProjectileClass,
