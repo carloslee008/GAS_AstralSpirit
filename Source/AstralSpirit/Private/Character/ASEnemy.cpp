@@ -7,6 +7,8 @@
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AstralSpirit/AstralSpirit.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widget/ASUserWidget.h"
 
 AASEnemy::AASEnemy()
 {
@@ -17,12 +19,39 @@ AASEnemy::AASEnemy()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
 	AttributeSet = CreateDefaultSubobject<UASAttributeSet>("AttributeSet");
+
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthBar->SetupAttachment(GetRootComponent());
 }
 
 void AASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilityActorInfo();
+
+	if (UASUserWidget* ASUserWidget = Cast<UASUserWidget>(HealthBar->GetUserWidgetObject()))
+	{
+		ASUserWidget->SetWidgetController(this);
+	}
+
+	if (const UASAttributeSet* ASAttributeSet = Cast<UASAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ASAttributeSet->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ASAttributeSet->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+
+		OnHealthChanged.Broadcast(ASAttributeSet->GetHealth());
+		OnMaxHealthChanged.Broadcast(ASAttributeSet->GetMaxHealth());
+	}
 }
 
 void AASEnemy::InitAbilityActorInfo()

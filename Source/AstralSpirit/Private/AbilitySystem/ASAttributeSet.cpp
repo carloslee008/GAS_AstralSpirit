@@ -141,7 +141,10 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
 	}
-	
+	if (Data.EvaluatedData.Attribute == GetMaxHealthAttribute())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, MaxHealth: %f"), *Props.TargetAvatarActor->GetName(), GetMaxHealth());
+	}
 	
 }
 
