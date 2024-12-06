@@ -145,6 +145,18 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, MaxHealth: %f"), *Props.TargetAvatarActor->GetName(), GetMaxHealth());
 	}
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		if (LocalIncomingDamage > 0.f)
+		{
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
+
+			const bool bIsFatal = NewHealth <= 0.f;
+		}
+	}
 	
 }
 
