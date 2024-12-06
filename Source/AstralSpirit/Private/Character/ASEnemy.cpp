@@ -4,6 +4,7 @@
 #include "Character/ASEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AstralSpirit/AstralSpirit.h"
@@ -60,6 +61,11 @@ void AASEnemy::InitAbilityActorInfo()
 	Cast<UASAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	InitializeDefaultAttributes();
+}
+
+void AASEnemy::InitializeDefaultAttributes() const
+{
+	UASAbilitySystemBlueprintLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 void AASEnemy::HighlightActor()
