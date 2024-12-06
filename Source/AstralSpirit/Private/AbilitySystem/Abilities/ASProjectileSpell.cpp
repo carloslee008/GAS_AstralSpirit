@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "ASGameplayTags.h"
 #include "Actor/ASProjectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -41,10 +42,11 @@ void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation
 			Cast<APawn>(GetAvatarActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		// TODO : Give the Projectile a Gameplay Effect Spec for causing Damage.
-		UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
+		const UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 
-		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+		FASGameplayTags GameplayTags = FASGameplayTags::Get();
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, 15.f);
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		
 		Projectile->FinishSpawning(SpawnTransform);

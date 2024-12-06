@@ -17,103 +17,107 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FString("Increases Armor, Health Regeneration, and Block Chance"));
 	
 	GameplayTags.Attributes_Primary_Intelligence = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Primary.Intelligence"),
-	 FString("Increases Mana, Mana Regeneration, and Elemental Resistances"));
+		FName("Attributes.Primary.Intelligence"),
+		FString("Increases Mana, Mana Regeneration, and Elemental Resistances"));
 	
 	GameplayTags.Attributes_Primary_Dexterity = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Primary.Dexterity"),
-	 FString("Increases Critical Hit Chance, Critical Hit Damage, and Dodge Chance"));
+		FName("Attributes.Primary.Dexterity"),
+		FString("Increases Critical Hit Chance, Critical Hit Damage, and Dodge Chance"));
 
 	/*
 	 * Secondary Attributes
 	 */
 
 	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.MaxHealth"),
-	 FString("Max Health"));
+		FName("Attributes.Secondary.MaxHealth"),
+		FString("Max Health"));
 	
 	GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.MaxMana"),
-	 FString("Max Mana"));
+		FName("Attributes.Secondary.MaxMana"),
+		FString("Max Mana"));
 	
 	GameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.HealthRegeneration"),
-	 FString("Amount of health regenerated per 1 second"));
+		FName("Attributes.Secondary.HealthRegeneration"),
+		FString("Amount of health regenerated per 1 second"));
 	
 	GameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.ManaRegeneration"),
-	 FString("Amount of mana regenerated per 1 second"));
+		FName("Attributes.Secondary.ManaRegeneration"),
+		FString("Amount of mana regenerated per 1 second"));
 
 	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.Armor"),
-	 FString("Reduces physical damage taken"));
+		FName("Attributes.Secondary.Armor"),
+		FString("Reduces physical damage taken"));
 	
 	GameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.CriticalHitChance"),
-	 FString("Chance of dealing critical damage"));
+		FName("Attributes.Secondary.CriticalHitChance"),
+		FString("Chance of dealing critical damage"));
 	
 	GameplayTags.Attributes_Secondary_CriticalHitDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.CriticalHitDamage"),
-	 FString("Amount of damage dealt when dealing critical hits"));
+		FName("Attributes.Secondary.CriticalHitDamage"),
+		FString("Amount of damage dealt when dealing critical hits"));
 	
 	GameplayTags.Attributes_Secondary_BlockChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.BlockChance"),
-	 FString("Chance to block incoming damage"));
+		FName("Attributes.Secondary.BlockChance"),
+		FString("Chance to block incoming damage"));
 	
 	GameplayTags.Attributes_Secondary_DodgeChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.DodgeChance"),
-	 FString("Chance of avoiding damage"));
+		FName("Attributes.Secondary.DodgeChance"),
+		FString("Chance of avoiding damage"));
 	
 	GameplayTags.Attributes_Secondary_FireResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.FireResistance"),
-	 FString("Reduces fire damage taken"));
+		FName("Attributes.Secondary.FireResistance"),
+		FString("Reduces fire damage taken"));
 	
 	GameplayTags.Attributes_Secondary_ColdResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.ColdResistance"),
-	 FString("Reduces cold damage taken"));
+		FName("Attributes.Secondary.ColdResistance"),
+		FString("Reduces cold damage taken"));
 	
 	GameplayTags.Attributes_Secondary_LightningResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.LightningResistance"),
-	 FString("Reduces lightning damage taken"));
+		FName("Attributes.Secondary.LightningResistance"),
+		FString("Reduces lightning damage taken"));
 	
 	GameplayTags.Attributes_Secondary_PoisonResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("Attributes.Secondary.PoisonResistance"),
-	 FString("Reduces poison damage taken"));
+		FName("Attributes.Secondary.PoisonResistance"),
+		FString("Reduces poison damage taken"));
 
 	/*
 	 * Input Tags
 	 */
 
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.LMB"),
-	 FString("Input Tag for Left Mouse Button"));
+		FName("InputTag.LMB"),
+		FString("Input Tag for Left Mouse Button"));
 
 	GameplayTags.InputTag_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.RMB"),
-	 FString("Input Tag for Right Mouse Button"));
+		FName("InputTag.RMB"),
+		FString("Input Tag for Right Mouse Button"));
 
 	GameplayTags.InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.1"),
-	 FString("Input Tag for 1 Key"));
+		FName("InputTag.1"),
+		FString("Input Tag for 1 Key"));
 
 	GameplayTags.InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.2"),
-	 FString("Input Tag for 2 Key"));
+		FName("InputTag.2"),
+		FString("Input Tag for 2 Key"));
 
 	GameplayTags.InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.3"),
-	 FString("Input Tag for 3 Key"));
+		FName("InputTag.3"),
+		FString("Input Tag for 3 Key"));
 
 	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.4"),
-	 FString("Input Tag for 4 Key"));
+		FName("InputTag.4"),
+		FString("Input Tag for 4 Key"));
 
 	GameplayTags.InputTag_5 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.5"),
-	 FString("Input Tag for 5 Key"));
+		FName("InputTag.5"),
+		FString("Input Tag for 5 Key"));
 	
 	GameplayTags.InputTag_6 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-	FName("InputTag.6"),
-	 FString("Input Tag for 6 Key"));
+		FName("InputTag.6"),
+		FString("Input Tag for 6 Key"));
+
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Damage"),
+		FString("Input Tag for Damage"));
 
 }
