@@ -29,6 +29,11 @@ UAbilitySystemComponent* AASCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UAnimMontage* AASCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 void AASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

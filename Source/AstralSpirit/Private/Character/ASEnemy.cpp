@@ -4,11 +4,13 @@
 #include "Character/ASEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/ASUserWidget.h"
 
 AASEnemy::AASEnemy()
@@ -28,6 +30,7 @@ AASEnemy::AASEnemy()
 void AASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
 
 	if (UASUserWidget* ASUserWidget = Cast<UASUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -49,10 +52,21 @@ void AASEnemy::BeginPlay()
 				OnMaxHealthChanged.Broadcast(Data.NewValue);
 			}
 		);
+		
+		AbilitySystemComponent->RegisterGameplayTagEvent(FASGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this,
+			&AASEnemy::HitReactTagChanged
+		);
 
 		OnHealthChanged.Broadcast(ASAttributeSet->GetHealth());
 		OnMaxHealthChanged.Broadcast(ASAttributeSet->GetMaxHealth());
 	}
+}
+
+void AASEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = NewCount ? 0 : BaseWalkSpeed;
 }
 
 void AASEnemy::InitAbilityActorInfo()

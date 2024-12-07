@@ -45,9 +45,9 @@ void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation
 		const UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 
-		FASGameplayTags GameplayTags = FASGameplayTags::Get();
-		float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage : %f"), ScaledDamage));
+		const FASGameplayTags GameplayTags = FASGameplayTags::Get();
+		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, ScaledDamage);
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		

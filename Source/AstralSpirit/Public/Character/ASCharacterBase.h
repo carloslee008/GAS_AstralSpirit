@@ -22,8 +22,10 @@ class ASTRALSPIRIT_API AASCharacterBase : public ACharacter, public IAbilitySyst
 public:
 	AASCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	// Getter
+	
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+	
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,5 +63,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	UAnimMontage* HitReactMontage;
 
 };

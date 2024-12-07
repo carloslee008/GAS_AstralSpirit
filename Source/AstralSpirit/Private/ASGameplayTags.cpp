@@ -117,7 +117,11 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FString("Input Tag for 6 Key"));
 
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.Damage"),
-		FString("Input Tag for Damage"));
+		FName("Damage"),
+		FString("Damage"));
+
+	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.HitReact"),
+		FString("Tag granted when Hit Reacting"));
 
 }

@@ -46,6 +46,7 @@ public:
 	FGameplayTag InputTag_6;
 
 	FGameplayTag Damage;
+	FGameplayTag Effects_HitReact;
 	
 protected:
 
