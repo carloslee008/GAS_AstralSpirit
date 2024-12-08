@@ -9,6 +9,8 @@
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/ASPlayerController.h"
 
 UASAttributeSet::UASAttributeSet()
 {
@@ -79,7 +81,7 @@ void UASAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
 	}
-
+	
 }
 
 void UASAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -170,9 +172,20 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
                 TagContainer.AddTag(FASGameplayTags::Get().Effects_HitReact);
                 Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
+			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
-	
+}
+
+void UASAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		if (AASPlayerController* PC = Cast<AASPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		{
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		}
+	}
 }
 
 void UASAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
