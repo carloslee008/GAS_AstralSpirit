@@ -46,18 +46,20 @@ void AASCharacterBase::Die()
 
 void AASCharacterBase::MulticastHandleDeath_Implementation()
 {
-	// Ragdoll the character
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
+	// Ragdoll the character
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Prevent blocking other characters
 	
-	
+	// Prevent blocking other characters
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
+
+	Dissolve();
 }
 
 void AASCharacterBase::BeginPlay()
@@ -98,6 +100,20 @@ void AASCharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 
 	ASASC->AddCharacterAbilities(StartupAbilities);
+}
 
-	
+void AASCharacterBase::Dissolve()
+{
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, MaterialInstanceDynamic);
+		StartDissolveTimeline(MaterialInstanceDynamic);
+	}
+	if (IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		Weapon->SetMaterial(0, MaterialInstanceDynamic);
+		StartWeaponDissolveTimeline(MaterialInstanceDynamic);
+	}
 }
