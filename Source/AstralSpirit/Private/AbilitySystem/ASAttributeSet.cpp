@@ -155,6 +155,12 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 			SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
 
 			const bool bIsFatal = NewHealth <= 0.f;
+			if (!bIsFatal)
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FASGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 	}
 	
