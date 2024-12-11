@@ -51,18 +51,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float Damage = Spec.GetSetByCallerMagnitude(FASGameplayTags::Get().Damage);
 
 	// Capture Block Chance on Target, and determine if there was a successful Block
-	// If Block, Halve the Damage.
-
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
+	TargetBlockChance = FMath::Max<float>(0.f, TargetBlockChance);
 
+	// If Blocked, Halve the Damage.
 	const bool bBlocked = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) <= TargetBlockChance;
 	Damage = bBlocked ? Damage / 2.f : Damage;
-	
-	// float Armor = 0.f;
-	// ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluationParameters, Armor);
-	// Armor = FMath::Max<float>(0, Armor);
-	// ++Armor;
+
+	// Capture Target Armor on Target, and subtract from Damage
+	float TargetArmor = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluationParameters, TargetArmor);
+	TargetArmor = FMath::Max<float>(0, TargetArmor);
+	Damage -= TargetArmor;
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UASAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
