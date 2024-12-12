@@ -11,10 +11,14 @@ struct ASDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);
 	ASDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UASAttributeSet, Armor, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UASAttributeSet, BlockChance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UASAttributeSet, CriticalHitChance, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UASAttributeSet, CriticalHitDamage, Source, false);
 	}
 };
 
@@ -28,6 +32,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
 	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitDamageDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -64,6 +70,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluationParameters, TargetArmor);
 	TargetArmor = FMath::Max<float>(0, TargetArmor);
 	Damage -= TargetArmor;
+
+	// Capture Critical Hit Chance and Critical Hit Damage on Source, and determine if there was a successful Crit Hit
+	float SourceCriticalHitChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitChanceDef, EvaluationParameters, SourceCriticalHitChance);
+	SourceCriticalHitChance = FMath::Max<float>(0, SourceCriticalHitChance);
+	float SourceCriticalHitDamage = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitDamageDef, EvaluationParameters, SourceCriticalHitDamage);
+	SourceCriticalHitDamage = FMath::Max<float>(0, SourceCriticalHitDamage);
+
+
+	// If Critically Hit, multiply by Critical Hit Damage
+	const bool bCritHitSuccess = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) <= SourceCriticalHitChance;
+	Damage = bCritHitSuccess ? Damage * SourceCriticalHitDamage : Damage;	
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UASAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
