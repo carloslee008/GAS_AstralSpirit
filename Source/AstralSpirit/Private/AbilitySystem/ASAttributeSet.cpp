@@ -187,7 +187,7 @@ void UASAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Dam
 	{
 		if (AASPlayerController* PC = Cast<AASPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
 		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlocked, bCriticalHit);
 		}
 	}
 }
