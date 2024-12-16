@@ -4,7 +4,9 @@
 #include "AbilitySystem/CustomCalculations/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "ASAbilityTypes.h"
 #include "ASGameplayTags.h"
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAttributeSet.h"
 
 struct ASDamageStatics
@@ -60,9 +62,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(0.f, TargetBlockChance);
-
+	
 	// If Blocked, Halve the Damage.
 	const bool bBlocked = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) <= TargetBlockChance;
+	
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	UASAbilitySystemBlueprintLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
+	
 	Damage = bBlocked ? Damage / 2.f : Damage;
 
 	// Capture Target Armor on Target, and subtract from Damage
@@ -79,10 +85,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitDamageDef, EvaluationParameters, SourceCriticalHitDamage);
 	SourceCriticalHitDamage = FMath::Max<float>(0, SourceCriticalHitDamage);
 
-
 	// If Critically Hit, multiply by Critical Hit Damage
-	const bool bCritHitSuccess = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) <= SourceCriticalHitChance;
-	Damage = bCritHitSuccess ? Damage * SourceCriticalHitDamage : Damage;	
+	const bool bCriticalHit = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) <= SourceCriticalHitChance;
+	UASAbilitySystemBlueprintLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
+	
+	Damage = bCriticalHit ? Damage * SourceCriticalHitDamage : Damage;	
 
 	const FGameplayModifierEvaluatedData EvaluatedData(UASAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);

@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 
+#include "ASAbilityTypes.h"
 #include "Game/ASGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/ASPlayerState.h"
@@ -85,5 +86,40 @@ void UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(const UObject* World
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
+	}
+}
+
+bool UASAbilitySystemBlueprintLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FASGameplayEffectContext* ASEffectContext = static_cast<const FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ASEffectContext->IsBlockedHit();
+	}
+	return false;
+}
+
+bool UASAbilitySystemBlueprintLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FASGameplayEffectContext* ASEffectContext = static_cast<const FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ASEffectContext->IsCriticalHit();
+	}
+	return false;
+}
+
+void UASAbilitySystemBlueprintLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetIsBlockedHit(InIsBlockedHit);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
+	bool InIsCriticalHit)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetIsCriticalHit(InIsCriticalHit);
 	}
 }

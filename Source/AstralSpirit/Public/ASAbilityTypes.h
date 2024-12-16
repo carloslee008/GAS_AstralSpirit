@@ -10,8 +10,8 @@ struct FASGameplayEffectContext : public FGameplayEffectContext
 
 public:
 
-	bool IsBlockedHit() { return bIsBlockedHit; }
-	bool IsCriticalHit() { return bIsCriticalHit; }
+	bool IsBlockedHit() const { return bIsBlockedHit; }
+	bool IsCriticalHit() const { return bIsCriticalHit; }
 
 	void SetIsBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
