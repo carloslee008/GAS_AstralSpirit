@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/ASGameplayAbility.h"
+#include "AbilitySystem/Abilities/ASDamageGameplayAbility.h"
 #include "ASProjectileSpell.generated.h"
 
 class AASProjectile;
@@ -11,7 +11,7 @@ class AASProjectile;
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API UASProjectileSpell : public UASGameplayAbility
+class ASTRALSPIRIT_API UASProjectileSpell : public UASDamageGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -23,8 +23,5 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AASProjectile> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 };

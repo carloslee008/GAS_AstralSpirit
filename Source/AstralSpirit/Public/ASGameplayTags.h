@@ -46,6 +46,12 @@ public:
 	FGameplayTag InputTag_6;
 
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Cold;
+	FGameplayTag Damage_Lightning;
+	FGameplayTag Damage_Poison;
+	FGameplayTag Damage_Physical;
+	
 	FGameplayTag Effects_HitReact;
 	
 protected:

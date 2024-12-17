@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "ASAbilityTypes.h"
 #include "ASGameplayTags.h"
+#include "GameplayTagsManager.h"
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAttributeSet.h"
 
@@ -55,9 +56,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
-	// Get Damage Set by Caller Magnitude
-	float Damage = Spec.GetSetByCallerMagnitude(FASGameplayTags::Get().Damage);
-
+	// Get Damage from each Damage Type
+	float Damage = 0.f;
+	FGameplayTagContainer AllDamageTags = UGameplayTagsManager::Get().RequestGameplayTagChildren(FASGameplayTags::Get().Damage);
+	for (const auto& Tag : AllDamageTags)
+	{
+		// Get Damage Set by Caller Magnitude
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(Tag);
+		Damage += DamageTypeValue;
+	}
 	// Capture Block Chance on Target, and determine if there was a successful Block
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
