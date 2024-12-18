@@ -51,6 +51,8 @@ public:
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Poison;
 	FGameplayTag Damage_Physical;
+
+	TMap<FGameplayTag, FGameplayTag> DamageToResistances;
 	
 	FGameplayTag Effects_HitReact;
 	

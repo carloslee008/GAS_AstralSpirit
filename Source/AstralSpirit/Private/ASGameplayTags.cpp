@@ -116,6 +116,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FName("InputTag.6"),
 		FString("Input Tag for 6 Key"));
 
+	/*
+	 * Damage Types
+	 */
+
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
 		FString("Damage"));
@@ -139,6 +143,19 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage.Physical"),
 		FString("Physical Damage Type"));
+
+	/*
+	 * Map of Damage Types to Resistances
+	 */
+
+	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Cold, GameplayTags.Attributes_Secondary_ColdResistance);
+	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Secondary_FireResistance);
+	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Lightning, GameplayTags.Attributes_Secondary_LightningResistance);
+	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Poison, GameplayTags.Attributes_Secondary_PoisonResistance);
+	
+	/*
+	 * Effects
+	 */
 	
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effects.HitReact"),
