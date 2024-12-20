@@ -53,7 +53,7 @@ struct TStructOpsTypeTraits<FASGameplayEffectContext> : public TStructOpsTypeTra
 {
 	enum
 	{
-		WithNetSerialize = true,
+		WithNetSerializer = true,
 		WithCopy = true
 	};
 };
