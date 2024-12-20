@@ -10,6 +10,8 @@
 #include "ASEnemy.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AASAIController;
 /**
  * 
  */
@@ -18,7 +20,7 @@ class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterfac
 {
 	GENERATED_BODY()
 	AASEnemy();
-
+	virtual void PossessedBy(AController* NewController) override;
 	
 public:
 	//~ Begin Enemy Interface.
@@ -61,5 +63,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AASAIController> ASAIController;
 	
 };

@@ -8,7 +8,10 @@
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
+#include "AI/ASAIController.h"
 #include "AstralSpirit/AstralSpirit.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/ASUserWidget.h"
@@ -25,6 +28,19 @@ AASEnemy::AASEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+}
+
+void AASEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// Only run by server, replicated to clients
+	// Initialize Blackboard and run Behavior Tree
+	if (!HasAuthority()) return;
+	ASAIController = Cast<AASAIController>(NewController);
+	ASAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	ASAIController->RunBehaviorTree(BehaviorTree);
+	
 }
 
 void AASEnemy::BeginPlay()
