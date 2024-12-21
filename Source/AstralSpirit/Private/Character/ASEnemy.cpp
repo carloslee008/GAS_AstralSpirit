@@ -23,6 +23,11 @@ AASEnemy::AASEnemy()
 	AbilitySystemComponent = CreateDefaultSubobject<UASAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	
 	AttributeSet = CreateDefaultSubobject<UASAttributeSet>("AttributeSet");
 
