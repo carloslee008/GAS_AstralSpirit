@@ -56,7 +56,7 @@ void AASEnemy::BeginPlay()
 	InitAbilityActorInfo();
 	if (HasAuthority())
 	{
-		UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	if (UASUserWidget* ASUserWidget = Cast<UASUserWidget>(HealthBar->GetUserWidgetObject()))
