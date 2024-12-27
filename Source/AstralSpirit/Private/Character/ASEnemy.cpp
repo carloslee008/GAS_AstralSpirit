@@ -135,3 +135,13 @@ void AASEnemy::Die()
 	SetLifeSpan(LifeSpan);
 	Super::Die();
 }
+
+void AASEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AASEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
