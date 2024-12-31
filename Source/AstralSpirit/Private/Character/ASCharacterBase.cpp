@@ -84,6 +84,11 @@ AActor* AASCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
+TArray<FTaggedMontage> AASCharacterBase::GetTaggedMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 void AASCharacterBase::InitAbilityActorInfo()
 {
 }
