@@ -93,7 +93,12 @@ void AASEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = NewCount ? 0 : BaseWalkSpeed;
-	ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
+	
+	// If check to make sure this is only called on Server
+	if (ASAIController && ASAIController->GetBlackboardComponent())
+	{
+		ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
+	}
 }
 
 void AASEnemy::InitAbilityActorInfo()
