@@ -4,6 +4,7 @@
 #include "Character/ASCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/CapsuleComponent.h"
@@ -68,10 +69,22 @@ void AASCharacterBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-FVector AASCharacterBase::GetCombatSocketLocation_Implementation()
+FVector AASCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	check(Weapon);
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	const FASGameplayTags GameplayTags = FASGameplayTags::Get();
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon) && IsValid(Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	{
+		return GetMesh()->GetSocketLocation(LeftHandSocketName);
+	}
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	{
+		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+	return FVector();
 }
 
 bool AASCharacterBase::IsDead_Implementation() const
