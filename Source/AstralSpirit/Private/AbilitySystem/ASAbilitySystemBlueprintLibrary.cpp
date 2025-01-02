@@ -154,3 +154,12 @@ void UASAbilitySystemBlueprintLibrary::GetLivePlayersWithinRadius(const UObject*
 		}
 	}
 }
+
+bool UASAbilitySystemBlueprintLibrary::IsSameTeam(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Enemy"));
+	const bool bBothAreEnemies = FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy"));
+	const bool bSameTeam = bBothArePlayers || bBothAreEnemies;
+
+	return bSameTeam;
+}
