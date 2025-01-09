@@ -138,6 +138,7 @@ int32 AASEnemy::GetPlayerLevel()
 void AASEnemy::Die()
 {
 	SetLifeSpan(LifeSpan);
+	if (ASAIController) ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	Super::Die();
 }
 
