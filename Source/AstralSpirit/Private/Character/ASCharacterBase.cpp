@@ -102,6 +102,11 @@ TArray<FTaggedMontage> AASCharacterBase::GetTaggedMontages_Implementation()
 	return AttackMontages;
 }
 
+UNiagaraSystem* AASCharacterBase::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
+}
+
 void AASCharacterBase::InitAbilityActorInfo()
 {
 }
