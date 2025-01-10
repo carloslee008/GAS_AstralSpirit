@@ -24,7 +24,7 @@ void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation
 
 	// Socket location
 	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(),
-		FASGameplayTags::Get().Montage_Attack_Weapon);
+		FASGameplayTags::Get().CombatSocket_Weapon);
 
 	// Rotation of Projectile
 	FRotator SpawnRotation = (ProjectileTargetLocation - SocketLocation).Rotation();
