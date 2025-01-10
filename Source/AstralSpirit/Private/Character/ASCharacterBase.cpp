@@ -8,6 +8,7 @@
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AASCharacterBase::AASCharacterBase()
 {
@@ -47,6 +48,7 @@ void AASCharacterBase::Die()
 
 void AASCharacterBase::MulticastHandleDeath_Implementation()
 {
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
