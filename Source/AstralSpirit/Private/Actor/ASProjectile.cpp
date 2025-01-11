@@ -54,6 +54,7 @@ void AASProjectile::Destroyed()
 		{
 			LoopingSoundComponent->Stop();
 		}
+		bHit = true;
 	}
 	
 	Super::Destroyed();
@@ -78,6 +79,7 @@ void AASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			LoopingSoundComponent->Stop();
 		}
+		bHit = true;
 	}
 
 	// Server handles Destroy() actor which is replicated to Client
