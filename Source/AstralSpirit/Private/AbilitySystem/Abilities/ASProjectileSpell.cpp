@@ -17,14 +17,13 @@ void UASProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 }
 
-void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+void UASProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
 
 	// Socket location
-	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(),
-		FASGameplayTags::Get().CombatSocket_Weapon);
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 
 	// Rotation of Projectile
 	FRotator SpawnRotation = (ProjectileTargetLocation - SocketLocation).Rotation();
