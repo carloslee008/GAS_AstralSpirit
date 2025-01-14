@@ -16,13 +16,16 @@ TArray<FVector> UASSummonAbility::GetSpawnLocations()
 	for (int32 i = 0; i < NumMinions; i++)
 	{
 		const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-		const FVector RandomSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
-		SpawnLocations.Add(RandomSpawnLocation);
+		FVector RandomSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
 
-		DrawDebugSphere(GetWorld(), RandomSpawnLocation, 20.f, 12, FColor::Cyan, false, 3.f);
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.f, FLinearColor::Green, 3.f);
-		DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
-		DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
+		FHitResult Hit;
+		// Line trace from above, so we get the spawn locations on ground in case of a sloped ground.
+		GetWorld()->LineTraceSingleByChannel(Hit, RandomSpawnLocation + FVector(0.f, 0.f, 400.f), RandomSpawnLocation - FVector(0.f, 0.f,400.f), ECC_Visibility); 
+		if (Hit.bBlockingHit)
+		{
+			RandomSpawnLocation = Hit.ImpactPoint;
+		}
+		SpawnLocations.Add(RandomSpawnLocation);
 	}
 	
 	return SpawnLocations;
