@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/Abilities/ASSummonAbility.h"
 
-#include "Kismet/KismetSystemLibrary.h"
+#include "Character/ASCharacterBase.h"
 
 TArray<FVector> UASSummonAbility::GetSpawnLocations()
 {
@@ -27,6 +27,12 @@ TArray<FVector> UASSummonAbility::GetSpawnLocations()
 		}
 		SpawnLocations.Add(RandomSpawnLocation);
 	}
-	
 	return SpawnLocations;
+}
+
+AASCharacterBase* UASSummonAbility::GetRandomMinionClassCDO()
+{
+	if (MinionClasses.Num() == 0) return nullptr;
+	const int32 Selection = FMath::RandRange(0, MinionClasses.Num() - 1);
+	return MinionClasses[Selection]->GetDefaultObject<AASCharacterBase>();
 }

@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
 #include "ASSummonAbility.generated.h"
 
+class AASCharacterBase;
 /**
  * 
  */
@@ -17,12 +18,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSpawnLocations();
+	
+	UFUNCTION(BlueprintPure, Category="Summoning")
+	AASCharacterBase* GetRandomMinionClassCDO();
 
 	UPROPERTY(EditAnywhere, Category="Summoning")
 	int32 NumMinions = 5;
 
 	UPROPERTY(EditAnywhere, Category="Summoning")
-	TArray<TSubclassOf<APawn>> MinionClasses;
+	TArray<TSubclassOf<AASCharacterBase>> MinionClasses;
 
 	UPROPERTY(EditAnywhere, Category="Summoning")
 	float MinSpawnDistance = 75.f;
