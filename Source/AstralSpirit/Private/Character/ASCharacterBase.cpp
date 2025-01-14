@@ -125,6 +125,11 @@ FTaggedMontage AASCharacterBase::GetTaggedMontageByTag_Implementation(const FGam
 	return FTaggedMontage();
 }
 
+int32 AASCharacterBase::GetMinionCount_Implementation()
+{
+	return MinionCount;
+}
+
 void AASCharacterBase::InitAbilityActorInfo()
 {
 }
