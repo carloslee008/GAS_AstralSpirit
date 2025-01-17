@@ -9,10 +9,14 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Input/ASInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 AASPlayerController::AASPlayerController()
@@ -194,6 +198,13 @@ void AASPlayerController::BeginPlay()
 	Super::BeginPlay();
 	check(ASContext);
 
+	if (IsValid(GetPawn()))
+	{
+		ActiveSpringArm = Cast<USpringArmComponent>(GetPawn()->GetComponentByClass(USpringArmComponent::StaticClass()));
+		ActiveCamera = Cast<UCameraComponent>(GetPawn()->GetComponentByClass(UCameraComponent::StaticClass()));
+		ActiveCapsuleComponent = Cast<UCapsuleComponent>(GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
+	}
+
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	// If locally controlled when in multiplayer
 	if (Subsystem)
@@ -208,6 +219,7 @@ void AASPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
+	
 }
 
 void AASPlayerController::SetupInputComponent()
@@ -220,6 +232,156 @@ void AASPlayerController::SetupInputComponent()
 	ASInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AASPlayerController::ShiftPressed);
 	ASInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AASPlayerController::ShiftReleased);
 	ASInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+}
+
+
+void AASPlayerController::SyncOccludedActors()
+{
+	if (!ShouldCheckCameraOcclusion()) return;
+
+	// Camera is currently colliding, show all current occluded actors and do not perform further occlusion
+	if (ActiveSpringArm->bDoCollisionTest)
+	{
+		ForceShowOccludedActors();
+		return;
+	}
+
+	FVector Start = ActiveCamera->GetComponentLocation();
+	FVector End = GetPawn()->GetActorLocation();
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
+	CollisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+
+	TArray<AActor*> ActorsToIgnore;
+	TArray<FHitResult> OutHits;
+
+	auto ShouldDebug = DebugLineTraces ? EDrawDebugTrace::ForDuration :EDrawDebugTrace::None;
+
+	// Line Trace from Camera to Player
+	bool bGotHits = UKismetSystemLibrary::CapsuleTraceMultiForObjects(
+		GetWorld(),
+		Start,
+		End,
+		ActiveCapsuleComponent->GetScaledCapsuleRadius() * CapsulePercentageForTrace,
+		ActiveCapsuleComponent->GetScaledCapsuleHalfHeight() * CapsulePercentageForTrace,
+		CollisionObjectTypes,
+		true,
+		ActorsToIgnore,
+		ShouldDebug,
+		OutHits,
+		true
+	);
+
+	if (bGotHits)
+	{
+		// The list of actors hit by the line trace
+		TSet<const AActor*> ActorsJustOccluded;
+
+		// Hide actors from hit result
+		for (FHitResult Hit : OutHits)
+		{
+			const AActor* HitActor = Cast<AActor>(Hit.GetActor());
+			HideOccludedActor(HitActor);
+			ActorsJustOccluded.Add(HitActor);
+		}
+
+		// Show actors that are currently hidden but not occluded by the camera anymore
+		for (auto& Elem : OccludedActors)
+		{
+			if (!ActorsJustOccluded.Contains(Elem.Value.Actor) && Elem.Value.IsOccluded)
+			{
+				ShowOccludedActor(Elem.Value);
+
+				if (DebugLineTraces)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Actor %s was occluded, but it's not occluded anymore with the new hits."), *Elem.Value.Actor->GetName());
+				}
+			}
+		}
+	}
+	else
+	{
+		ForceShowOccludedActors();
+	}
+}
+
+bool AASPlayerController::HideOccludedActor(const AActor* Actor)
+{
+	FCameraOccludedActor* ExistingOccludedActor = OccludedActors.Find(Actor);
+
+	if (ExistingOccludedActor && ExistingOccludedActor->IsOccluded)
+	{
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s was already occluded. Ignoring."), *Actor->GetName());
+		return false;
+	}
+	if (ExistingOccludedActor && IsValid(ExistingOccludedActor->Actor))
+	{
+		ExistingOccludedActor->IsOccluded = true;
+		OnHideOccludedActor(*ExistingOccludedActor);
+
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s exists, but was not occluded. Occluding it now."), *Actor->GetName());
+	}
+	else
+	{
+		UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(Actor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+		FCameraOccludedActor OccludedActor;
+		OccludedActor.Actor = Actor;
+		OccludedActor.StaticMeshComponent = StaticMeshComponent;
+		OccludedActor.Materials = StaticMeshComponent->GetMaterials();
+		OccludedActor.IsOccluded = true;
+		OccludedActors.Add(Actor, OccludedActor);
+		OnHideOccludedActor(OccludedActor);
+
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s does not exist, adding and occluding it now."), *Actor->GetName());
+	}
+	return true;
+}
+
+void AASPlayerController::ShowOccludedActor(FCameraOccludedActor& OccludedActor)
+{
+	if(!IsValid(OccludedActor.Actor))
+	{
+		OccludedActors.Remove(OccludedActor.Actor);
+	}
+
+	OccludedActor.IsOccluded = false;
+	OnShowOccludedActor(OccludedActor);
+}
+
+void AASPlayerController::ForceShowOccludedActors()
+{
+	for (auto& Elem : OccludedActors)
+	{
+		if (Elem.Value.IsOccluded)
+		{
+			ShowOccludedActor(Elem.Value);
+
+			if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s was occluded, force to show again"), *Elem.Value.Actor->GetName());
+		}
+	}
+}
+
+bool AASPlayerController::OnHideOccludedActor(const FCameraOccludedActor& OccludedActor) const
+{
+	for (int i = 0; i < OccludedActor.StaticMeshComponent->GetNumMaterials(); ++i)
+	{
+		OccludedActor.StaticMeshComponent->SetMaterial(i, FadeMaterial);
+	}
+	// Changes Collision profile so the mouse doesn't collide with the occluded objects.
+	OccludedActor.StaticMeshComponent->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	return true;
+}
+
+bool AASPlayerController::OnShowOccludedActor(const FCameraOccludedActor& OccludedActor) const
+{
+	for (int matIdx = 0; matIdx < OccludedActor.Materials.Num(); ++matIdx)
+	{
+		OccludedActor.StaticMeshComponent->SetMaterial(matIdx, OccludedActor.Materials[matIdx]);
+	}
+	// Changes Collision profile so the mouse collides with walls again.
+	OccludedActor.StaticMeshComponent->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	return true;
 }
 
 void AASPlayerController::Move(const FInputActionValue& InputActionValue)

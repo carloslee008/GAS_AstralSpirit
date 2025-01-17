@@ -7,6 +7,25 @@
 #include "GameFramework/PlayerController.h"
 #include "ASPlayerController.generated.h"
 
+USTRUCT(BlueprintType)
+struct FCameraOccludedActor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	const AActor* Actor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* StaticMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UMaterialInterface*> Materials;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsOccluded;
+	
+};
+
 class UDamageTextComponent;
 class USplineComponent;
 class UASAbilitySystemComponent;
@@ -32,8 +51,51 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+
+	/**
+	 *  Amount of Capsule Radius and Height to be used for Line Trace before considering and actor occluded.
+	 *  Low values may make camera clip through walls.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera Occlusion|Occlusion",meta=(ClampMin="0.1", ClampMax="10.0"))
+	float CapsulePercentageForTrace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera Occlusion|Materials")
+	UMaterialInterface* FadeMaterial;
+
+	UPROPERTY(BlueprintReadWrite, Category="Camera Occlusion|Components")
+	class USpringArmComponent* ActiveSpringArm;
+
+	UPROPERTY(BlueprintReadWrite, Category="Camera Occlusion|Components")
+	class UCameraComponent* ActiveCamera;
+	
+	UPROPERTY(BlueprintReadWrite, Category="Camera Occlusion|Components")
+	class UCapsuleComponent* ActiveCapsuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera Occlusion")
+	bool IsOcclusionEnabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera Occlusion|Occlusion")
+	bool DebugLineTraces;
+	
 	virtual void SetupInputComponent() override;
+	
 private:
+	/* Camera Occlusion Begin */
+	TMap<const AActor*, FCameraOccludedActor> OccludedActors;
+
+	bool HideOccludedActor(const AActor* Actor);
+	void ShowOccludedActor(FCameraOccludedActor& OccludedActor);
+	void ForceShowOccludedActors();
+	bool OnHideOccludedActor(const FCameraOccludedActor& OccludedActor) const;
+	bool OnShowOccludedActor(const FCameraOccludedActor& OccludedActor) const;
+	
+
+	__forceinline bool ShouldCheckCameraOcclusion() const
+	{
+		return IsOcclusionEnabled && FadeMaterial && ActiveCamera && ActiveCapsuleComponent;
+	}
+	/* Camera Occlusion End */
+	
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> ASContext;
 
@@ -81,5 +143,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SyncOccludedActors();
 	
 };
