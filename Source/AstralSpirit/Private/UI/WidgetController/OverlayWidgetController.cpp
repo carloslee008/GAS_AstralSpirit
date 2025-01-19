@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -73,6 +74,15 @@ void UOverlayWidgetController::OnInitializeStartupAbilities(UASAbilitySystemComp
 {
 	//TODO: Get information about all given abilities, look up their Ability Info, and broadcast it to widgets.
 	if (!ASAbilitySystemComponent->bStartupAbilitiesGiven) return;
+
+	FForEachAbility BroadcastDelegate;
+	BroadcastDelegate.BindLambda([this, ASAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
+	{
+		FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(ASAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
+		Info.InputTag = ASAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
+		AbilityInfoDelegate.Broadcast(Info);
+	});
+	ASAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
 }
 
 void UOverlayWidgetController::BindAttributeChange(const FGameplayAttribute& Attribute,
