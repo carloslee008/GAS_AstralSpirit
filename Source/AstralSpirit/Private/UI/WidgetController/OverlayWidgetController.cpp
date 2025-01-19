@@ -22,7 +22,9 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
 
-	// Vital Attributes
+	/* 
+	 *	Vital Attributes
+	 */
 	
 	// Health
 	BindAttributeChange(ASAttributeSet->GetHealthAttribute(), &OnHealthChanged);
@@ -36,27 +38,45 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	// Max Mana
 	BindAttributeChange(ASAttributeSet->GetMaxManaAttribute(), &OnMaxManaChanged);
 	
-	Cast<UASAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssetTags)
+	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (ASASC->bStartupAbilitiesGiven)
 		{
-			for (const FGameplayTag& Tag : AssetTags)
+			OnInitializeStartupAbilities(ASASC);
+		}
+		else
+		{
+			ASASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
+		}
+		
+		ASASC->EffectAssetTags.AddLambda(
+			[this](const FGameplayTagContainer& AssetTags)
 			{
-				// For example, let's say Tag = Message.HealthPotion
-				// "Message.HealthPotion".MatchesTag("Message") will return True,
-				// "Message".MatchesTag("Message.HealthPotion") will return False
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-				if (Tag.MatchesTag(MessageTag))
+				for (const FGameplayTag& Tag : AssetTags)
 				{
-					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowDelegate.Broadcast(*Row);
+					// For example, let's say Tag = Message.HealthPotion
+					// "Message.HealthPotion".MatchesTag("Message") will return True,
+					// "Message".MatchesTag("Message.HealthPotion") will return False
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+					if (Tag.MatchesTag(MessageTag))
+					{
+						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
 				}
 			}
-		}
-	);
+		);
+	}
+}
+
+void UOverlayWidgetController::OnInitializeStartupAbilities(UASAbilitySystemComponent* ASAbilitySystemComponent)
+{
+	//TODO: Get information about all given abilities, look up their Ability Info, and broadcast it to widgets.
+	if (!ASAbilitySystemComponent->bStartupAbilitiesGiven) return;
 }
 
 void UOverlayWidgetController::BindAttributeChange(const FGameplayAttribute& Attribute,
-	FOnAttributeChangedSignature* AttributeChangeDelegate) const
+                                                   FOnAttributeChangedSignature* AttributeChangeDelegate) const
 {
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddLambda(
 		[AttributeChangeDelegate](const FOnAttributeChangeData& Data)

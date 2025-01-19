@@ -6,6 +6,8 @@
 #include "UI/WidgetController/ASWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+
+
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public FTableRowBase
 {
@@ -26,6 +28,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 class UASUserWidget;
 class UAbilityInfo;
+class UASAbilitySystemComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
@@ -65,6 +68,8 @@ protected:
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
+
+	void OnInitializeStartupAbilities(UASAbilitySystemComponent* ASAbilitySystemComponent);
 
 private:
 	void BindAttributeChange(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate) const;
