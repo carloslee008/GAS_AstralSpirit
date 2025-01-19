@@ -87,7 +87,7 @@ FGameplayTag UASAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayAbi
 
 FGameplayTag UASAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
-	for (FGameplayTag Tag : AbilitySpec)
+	for (FGameplayTag Tag : AbilitySpec.DynamicAbilityTags)
 	{
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
 		{
@@ -95,6 +95,17 @@ FGameplayTag UASAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbili
 		}
 	}
 	return FGameplayTag();
+}
+
+void UASAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	if (!bStartupAbilitiesGiven)
+	{
+		bStartupAbilitiesGiven = true;
+		AbilitiesGivenDelegate.Broadcast(this);
+	}
 }
 
 void UASAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
