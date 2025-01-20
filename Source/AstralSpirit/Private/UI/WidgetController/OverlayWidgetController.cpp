@@ -72,7 +72,6 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UASAbilitySystemComponent* ASAbilitySystemComponent)
 {
-	//TODO: Get information about all given abilities, look up their Ability Info, and broadcast it to widgets.
 	if (!ASAbilitySystemComponent->bStartupAbilitiesGiven) return;
 
 	FForEachAbility BroadcastDelegate;
