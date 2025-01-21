@@ -48,4 +48,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="ASAbilitySystemBlueprintLibrary|GameplayMechanics")
 	static bool IsSameTeam(AActor* FirstActor, AActor* SecondActor);
+	
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 };

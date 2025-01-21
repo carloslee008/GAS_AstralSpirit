@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ScalableFloat.h"
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
@@ -14,7 +15,9 @@ enum class ECharacterClass : uint8
 {
 	Mage,
 	Warrior,
-	Rogue
+	Rogue,
+	Shaman,
+	Goblin
 };
 
 USTRUCT()
@@ -27,6 +30,9 @@ struct FCharacterClassDefaultInfo
 
 	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
+	FScalableFloat XPReward = FScalableFloat();
 };
 
 /**

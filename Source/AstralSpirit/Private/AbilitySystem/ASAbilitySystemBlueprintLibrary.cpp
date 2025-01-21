@@ -99,6 +99,20 @@ void UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(const UObject* World
 	}
 }
 
+int32 UASAbilitySystemBlueprintLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,
+	ECharacterClass CharacterClass, int32 CharacterLevel)
+{
+	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (ASGameMode == nullptr) return 0;
+	
+	UCharacterClassInfo* CharacterClassInfo = ASGameMode->CharacterClassInfo;
+
+	FCharacterClassDefaultInfo Info = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	float XPReward = Info.XPReward.GetValueAtLevel(CharacterLevel);
+
+	return static_cast<int32>(XPReward);
+}
+
 bool UASAbilitySystemBlueprintLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (const FASGameplayEffectContext* ASEffectContext = static_cast<const FASGameplayEffectContext*>(EffectContextHandle.Get()))
