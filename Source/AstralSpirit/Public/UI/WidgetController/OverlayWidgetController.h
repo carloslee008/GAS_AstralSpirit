@@ -64,6 +64,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
 	FAbilityInfoSignature AbilityInfoDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
@@ -75,6 +78,8 @@ protected:
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 
 	void OnInitializeStartupAbilities(UASAbilitySystemComponent* ASAbilitySystemComponent);
+
+	void OnXPChanged(int32 NewXP) const;
 
 private:
 	void BindAttributeChange(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate) const;

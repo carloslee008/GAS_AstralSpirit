@@ -3,11 +3,11 @@
 
 #include "AbilitySystem/Data/LevelUpInfo.h"
 
-int32 ULevelUpInfo::FindLevelForXP(float XP)
+int32 ULevelUpInfo::FindLevelForXP(float XP) const
 {
 	
 	int32 MaxLevel = LevelUpInformation.Num() - 1;
-	// In case mount of XP greater than max level requirement
+	// In case amount of XP greater than max level requirement
 	if (XP >= LevelUpInformation[MaxLevel].LevelUpRequirement) return MaxLevel; 
 	
 	// Start at index 1 because entry for level "0" is a placeholder

@@ -33,6 +33,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="LevelUp")
 	TArray<FASLevelUpInfo> LevelUpInformation;
 
-	int32 FindLevelForXP(float XP);
+	int32 FindLevelForXP(float XP) const;
 	
 };

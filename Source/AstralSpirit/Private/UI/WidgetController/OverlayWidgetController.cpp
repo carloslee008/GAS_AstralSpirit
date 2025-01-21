@@ -6,22 +6,30 @@
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
+#include "Player/ASPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
 	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
+	const AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
 	
 	OnHealthChanged.Broadcast(ASAttributeSet->GetHealth());
 	OnMaxHealthChanged.Broadcast(ASAttributeSet->GetMaxHealth());
 	OnManaChanged.Broadcast(ASAttributeSet->GetMana());
 	OnMaxManaChanged.Broadcast(ASAttributeSet->GetMaxMana());
+	OnXPPercentChangedDelegate.Broadcast(ASPlayerState->GetPlayerXP());
 	
 }
 
 // Configure Broadcast events to update the overlay widget components
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
+	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
+	ASPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+	
 	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
+	
 
 	/* 
 	 *	Vital Attributes
@@ -82,6 +90,30 @@ void UOverlayWidgetController::OnInitializeStartupAbilities(UASAbilitySystemComp
 		AbilityInfoDelegate.Broadcast(Info);
 	});
 	ASAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
+}
+
+void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
+{
+	const AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
+	const ULevelUpInfo* LevelUpInfo = ASPlayerState->LevelUpInfo;
+	checkf(LevelUpInfo, TEXT("Cannot find LevelUpInfo. Please fill out ASPlayerState Blueprint."));
+
+	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
+	const int32 MaxLevel = LevelUpInfo->LevelUpInformation.Num() - 1;
+
+	if (Level < MaxLevel && Level > 0)
+	{
+		const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
+		const int32 PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
+
+		const int32 CurrentLevelXPRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
+		const int32 XPForCurrentLevel = NewXP - PreviousLevelUpRequirement;
+
+		const float XPBarPercent = static_cast<float>(XPForCurrentLevel) / static_cast<float>(CurrentLevelXPRequirement);
+
+		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
+	}
+	
 }
 
 void UOverlayWidgetController::BindAttributeChange(const FGameplayAttribute& Attribute,
