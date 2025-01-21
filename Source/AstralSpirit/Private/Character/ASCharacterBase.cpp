@@ -167,6 +167,7 @@ void AASCharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 
 	ASASC->AddCharacterAbilities(StartupAbilities);
+	ASASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 }
 
 void AASCharacterBase::Dissolve()

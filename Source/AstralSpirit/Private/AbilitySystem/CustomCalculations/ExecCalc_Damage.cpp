@@ -91,6 +91,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	// Calculate Elemental Damages
 	float Damage = 0.f;
 	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FASGameplayTags::Get().DamageToResistances)
 	{
@@ -111,6 +112,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		// Get Damage Set by Caller Magnitude
 		Damage += DamageTypeValue;
 	}
+
+	// Physical damage does not have resistance, so must be calculated separately
+	float PhysicalDamageValue = Spec.GetSetByCallerMagnitude(FASGameplayTags::Get().Damage_Physical, false);
+	Damage += PhysicalDamageValue;
 	
 	// Capture Block Chance on Target, and determine if there was a successful Block
 	float TargetBlockChance = 0.f;
