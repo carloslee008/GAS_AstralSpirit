@@ -19,11 +19,15 @@ class UPlayerInterface : public UInterface
 class ASTRALSPIRIT_API IPlayerInterface
 {
 	GENERATED_BODY()
+	
+	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void AddToXP(int32 InXP);
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+	UFUNCTION(BlueprintNativeEvent)
+	void AddToLevel(int32 InLevel);
+
 public:
 };

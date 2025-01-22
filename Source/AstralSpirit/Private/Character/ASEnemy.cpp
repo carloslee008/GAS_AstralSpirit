@@ -132,7 +132,7 @@ void AASEnemy::UnHighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
-int32 AASEnemy::GetPlayerLevel()
+int32 AASEnemy::GetPlayerLevel_Implementation()
 {
 	return Level;
 }

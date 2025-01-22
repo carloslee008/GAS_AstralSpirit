@@ -46,7 +46,14 @@ void AASCharacter::AddToXP_Implementation(int32 InXP)
 	ASPlayerState->AddToXP(InXP);
 }
 
-int32 AASCharacter::GetPlayerLevel()
+void AASCharacter::AddToLevel_Implementation(int32 InLevel)
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	ASPlayerState->AddToLevel(InLevel);
+}
+
+int32 AASCharacter::GetPlayerLevel_Implementation()
 {
 	const AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
 	check(ASPlayerState);
