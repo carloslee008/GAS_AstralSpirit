@@ -179,7 +179,11 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 		const float LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
 
-		
+		//TODO: Check to see if level up
+		if (Props.SourceCharacter->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+		}
 	}
 }
 
