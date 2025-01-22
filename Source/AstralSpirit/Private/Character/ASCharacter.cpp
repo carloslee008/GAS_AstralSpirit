@@ -39,6 +39,13 @@ void AASCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+void AASCharacter::AddToXP_Implementation(int32 InXP)
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	ASPlayerState->AddToXP(InXP);
+}
+
 int32 AASCharacter::GetPlayerLevel()
 {
 	const AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();

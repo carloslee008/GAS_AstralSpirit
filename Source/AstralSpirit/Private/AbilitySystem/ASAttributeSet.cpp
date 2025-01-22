@@ -11,6 +11,7 @@
 #include "AstralSpirit/ASLogChannels.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/ASPlayerController.h"
 
@@ -159,6 +160,7 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 				{
 					CombatInterface->Die();
 				}
+				SendXPEvent(Props);
 			}
 			else
 			{
@@ -176,7 +178,8 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	{
 		const float LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
-		UE_LOG(LogAS, Log, TEXT("Incoming XP: %f"), LocalIncomingXP);
+
+		
 	}
 }
 
@@ -193,6 +196,23 @@ void UASAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Dam
 		{
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlocked, bCriticalHit);
 		}
+	}
+}
+
+void UASAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const ECharacterClass TargetClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 XPReward = UASAbilitySystemBlueprintLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, TargetClass, TargetLevel);
+
+		const FASGameplayTags GameplayTags = FASGameplayTags::Get();
+		FGameplayEventData Payload;
+		Payload.EventTag = GameplayTags.Attributes_Meta_IncomingXP;
+		Payload.EventMagnitude = XPReward;
+		
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Payload);
 	}
 }
 

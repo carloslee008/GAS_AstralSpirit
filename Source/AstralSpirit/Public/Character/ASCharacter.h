@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Character/ASCharacterBase.h"
+#include "Interaction/PlayerInterface.h"
 #include "ASCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API AASCharacter : public AASCharacterBase
+class ASTRALSPIRIT_API AASCharacter : public AASCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 public:
@@ -18,9 +19,13 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
-	//~ Begin Combat Interface
+	/** Player Interface */
+	virtual void AddToXP_Implementation(int32 InXP) override;
+	/** End Player Interface */
+
+	/** Begin Combat Interface */
 	virtual int32 GetPlayerLevel() override;
-	//~ End Combat Interface
+	/** End Combat Interface */
 private:
 	virtual void InitAbilityActorInfo() override;
 };
