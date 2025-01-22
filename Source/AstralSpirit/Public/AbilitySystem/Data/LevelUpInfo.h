@@ -18,7 +18,7 @@ struct FASLevelUpInfo
 	int32 AttributePointReward = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 AbilityPointReward = 1;
+	int32 SkillPointReward = 1;
 	
 };
 

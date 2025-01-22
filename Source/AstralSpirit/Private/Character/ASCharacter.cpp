@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
@@ -39,6 +40,51 @@ void AASCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+int32 AASCharacter::GetXP_Implementation() const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->GetPlayerXP();
+}
+
+int32 AASCharacter::FindLevelForXP_Implementation(int32 InXP) const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->LevelUpInfo->FindLevelForXP(InXP);
+}
+
+int32 AASCharacter::GetAttributePointsReward_Implementation(int32 Level) const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->LevelUpInfo->LevelUpInformation[Level].AttributePointReward;
+}
+
+int32 AASCharacter::GetSkillPointsReward_Implementation(int32 Level) const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->LevelUpInfo->LevelUpInformation[Level].SkillPointReward;
+}
+
+void AASCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	ASPlayerState->AddToLevel(InPlayerLevel);
+}
+
+void AASCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
+{
+	// TODO: Add Attribute Points to PlayerState
+}
+
+void AASCharacter::AddToSkillPoints_Implementation(int32 InSkillPoints)
+{
+	// TODO: Add Skill Points to PlayerState
+}
+
 void AASCharacter::AddToXP_Implementation(int32 InXP)
 {
 	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
@@ -46,11 +92,9 @@ void AASCharacter::AddToXP_Implementation(int32 InXP)
 	ASPlayerState->AddToXP(InXP);
 }
 
-void AASCharacter::AddToLevel_Implementation(int32 InLevel)
+void AASCharacter::LevelUp_Implementation()
 {
-	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
-	check(ASPlayerState);
-	ASPlayerState->AddToLevel(InLevel);
+	
 }
 
 int32 AASCharacter::GetPlayerLevel_Implementation()
