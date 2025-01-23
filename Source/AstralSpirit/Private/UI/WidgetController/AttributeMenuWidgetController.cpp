@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
+#include "Player/ASPlayerState.h"
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
@@ -18,6 +19,7 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
 		AttributeInfoDelegate.Broadcast(Info);
 	}
+	
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
@@ -34,6 +36,13 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
+	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
+	ASPlayerState->OnAttributePointsChangedDelegate.AddLambda(
+		[this](int32 Points)
+		{
+			AttributePointsChangedDelegate.Broadcast(Points);
+		}
+	);
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,

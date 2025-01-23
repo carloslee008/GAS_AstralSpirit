@@ -25,6 +25,8 @@ void AASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 	DOREPLIFETIME(AASPlayerState, Level);
 	DOREPLIFETIME(AASPlayerState, XP);
+	DOREPLIFETIME(AASPlayerState, AttributePoints);
+	DOREPLIFETIME(AASPlayerState, SkillPoints);
 }
 
 UAbilitySystemComponent* AASPlayerState::GetAbilitySystemComponent() const
@@ -65,3 +67,15 @@ void AASPlayerState::OnRep_Level(int32 OldLevel)
 {
 	OnLevelChangedDelegate.Broadcast(Level);
 }
+
+void AASPlayerState::OnRep_AttributePoints(int32 OldAttributePoints)
+{
+	OnAttributePointsChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AASPlayerState::OnRep_SkillPoints(int32 OldSkillPoints)
+{
+	OnSkillPointsChangedDelegate.Broadcast(SkillPoints);
+}
+
+
