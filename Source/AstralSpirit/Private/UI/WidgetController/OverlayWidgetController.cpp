@@ -27,6 +27,13 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
 	ASPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+
+	ASPlayerState->OnLevelChangedDelegate.AddLambda(
+		[this](int32 NewLevel)
+		{
+			OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+		}	
+	);
 	
 	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
 	
