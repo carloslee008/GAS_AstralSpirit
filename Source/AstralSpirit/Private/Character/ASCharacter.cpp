@@ -106,6 +106,20 @@ void AASCharacter::AddToSkillPoints_Implementation(int32 InSkillPoints)
 	ASPlayerState->AddToSkillPoints(InSkillPoints);
 }
 
+int32 AASCharacter::GetAttributePoints_Implementation() const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->GetPlayerAttributePoints();
+}
+
+int32 AASCharacter::GetSkillPoints_Implementation() const
+{
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	return ASPlayerState->GetPlayerSkillPoints();
+}
+
 void AASCharacter::AddToXP_Implementation(int32 InXP)
 {
 	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();

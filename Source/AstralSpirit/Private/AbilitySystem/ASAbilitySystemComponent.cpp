@@ -3,9 +3,11 @@
 
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "ASGameplayTags.h"
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
 #include "AstralSpirit/ASLogChannels.h"
+#include "Interaction/PlayerInterface.h"
 
 void UASAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -107,6 +109,31 @@ FGameplayTag UASAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbili
 	return FGameplayTag();
 }
 
+void UASAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if (GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		if (IPlayerInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
+		{
+			ServerUpgradeAttribute(AttributeTag);
+		}
+	}
+}
+
+void UASAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
+{
+	FGameplayEventData Payload;
+	Payload.EventTag = AttributeTag;
+	Payload.EventMagnitude = 1.f;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTag, Payload);
+
+	if (GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
+	}
+}
+
 void UASAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
@@ -119,7 +146,7 @@ void UASAbilitySystemComponent::OnRep_ActivateAbilities()
 }
 
 void UASAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
-                                                                   const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+	const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
