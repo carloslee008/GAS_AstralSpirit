@@ -176,9 +176,7 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	{
 		const float LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
-
-		//TODO: Check to see if level up
-
+		
 		// Source Character is the owner, since GA_ListenForEvents applies GE_EventBasedEffect, adding to IncomingXP
 		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
 		{

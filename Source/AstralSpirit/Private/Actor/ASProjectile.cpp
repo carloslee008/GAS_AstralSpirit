@@ -73,7 +73,6 @@ void AASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	}
 	if (!bHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] spawned"), *GetName());
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
 		if (LoopingSoundComponent)
