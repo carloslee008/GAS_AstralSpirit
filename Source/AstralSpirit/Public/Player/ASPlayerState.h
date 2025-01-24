@@ -41,9 +41,13 @@ public:
 
 	void AddToXP(int32 InXP);
 	void AddToLevel(int32 InLevel);
+	void AddToAttributePoints(int32 InAttributePoints);
+	void AddToSkillPoints(int32 InSkillPoints);
 	
 	void SetXP(int32 InXP);
 	void SetLevel(int32 InLevel);
+	void SetAttributePoints(int32 InAttributePoints);
+	void SetSkillPoints(int32 InSkillPoints);
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

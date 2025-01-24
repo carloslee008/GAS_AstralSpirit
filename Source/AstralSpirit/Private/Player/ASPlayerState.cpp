@@ -46,6 +46,18 @@ void AASPlayerState::AddToLevel(int32 InLevel)
 	OnLevelChangedDelegate.Broadcast(Level);
 }
 
+void AASPlayerState::AddToAttributePoints(int32 InAttributePoints)
+{
+	AttributePoints += InAttributePoints;
+	OnAttributePointsChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AASPlayerState::AddToSkillPoints(int32 InSkillPoints)
+{
+	SkillPoints += InSkillPoints;
+	OnSkillPointsChangedDelegate.Broadcast(SkillPoints);
+}
+
 void AASPlayerState::SetXP(int32 InXP)
 {
 	XP = InXP;
@@ -56,6 +68,18 @@ void AASPlayerState::SetLevel(int32 InLevel)
 {
 	Level = InLevel;
 	OnLevelChangedDelegate.Broadcast(Level);
+}
+
+void AASPlayerState::SetAttributePoints(int32 InAttributePoints)
+{
+	AttributePoints = InAttributePoints;
+	OnAttributePointsChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AASPlayerState::SetSkillPoints(int32 InSkillPoints)
+{
+	SkillPoints = InSkillPoints;
+	OnSkillPointsChangedDelegate.Broadcast(SkillPoints);
 }
 
 void AASPlayerState::OnRep_XP(int32 OldXP)

@@ -94,12 +94,16 @@ void AASCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 
 void AASCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
 {
-	// TODO: Add Attribute Points to PlayerState
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	ASPlayerState->AddToAttributePoints(InAttributePoints);
 }
 
 void AASCharacter::AddToSkillPoints_Implementation(int32 InSkillPoints)
 {
-	// TODO: Add Skill Points to PlayerState
+	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
+	check(ASPlayerState);
+	ASPlayerState->AddToSkillPoints(InSkillPoints);
 }
 
 void AASCharacter::AddToXP_Implementation(int32 InXP)

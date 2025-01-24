@@ -20,6 +20,8 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 		AttributeInfoDelegate.Broadcast(Info);
 	}
 	
+	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
+	AttributePointsChangedDelegate.Broadcast(ASPlayerState->GetPlayerAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
