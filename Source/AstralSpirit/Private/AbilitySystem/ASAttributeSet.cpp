@@ -163,7 +163,7 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 			else
 			{
 				FGameplayTagContainer TagContainer;
-                TagContainer.AddTag(FASGameplayTags::Get().Effects_HitReact);
+                TagContainer.AddTag(FASGameplayTags::Get().Abilities_HitReact);
                 Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
 
