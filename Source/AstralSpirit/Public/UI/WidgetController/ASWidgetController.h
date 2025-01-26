@@ -6,7 +6,14 @@
 #include "AbilitySystemComponent.h"
 #include "ASWidgetController.generated.h"
 
+class UAbilityInfo;
+class UASAttributeSet;
+class UASAbilitySystemComponent;
+class AASPlayerState;
+class AASPlayerController;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedSignature, int32, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FASAbilityInfo&, Info);
+
 
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -46,6 +53,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
+	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
+	
+	void BroadcastAbilityInfo();
+	
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
@@ -59,4 +75,21 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category="Widget Controller")
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
+	TObjectPtr<AASPlayerController> ASPlayerController;
+
+	UPROPERTY(BlueprintReadOnly, Category="Widget Controller")
+	TObjectPtr<AASPlayerState> ASPlayerState;
+
+	UPROPERTY(BlueprintReadOnly, Category="Widget Controller")
+	TObjectPtr<UASAbilitySystemComponent> ASAbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category="Widget Controller")
+	TObjectPtr<UASAttributeSet> ASAttributeSet;
+
+	AASPlayerController* GetASPC();
+	AASPlayerState* GetASPS();
+	UASAbilitySystemComponent* GetASASC();
+	UASAttributeSet* GetASAS();
 };

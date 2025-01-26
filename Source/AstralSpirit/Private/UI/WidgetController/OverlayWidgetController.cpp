@@ -11,61 +11,53 @@
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
-	const AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
-	
-	OnHealthChanged.Broadcast(ASAttributeSet->GetHealth());
-	OnMaxHealthChanged.Broadcast(ASAttributeSet->GetMaxHealth());
-	OnManaChanged.Broadcast(ASAttributeSet->GetMana());
-	OnMaxManaChanged.Broadcast(ASAttributeSet->GetMaxMana());
-	OnXPPercentChangedDelegate.Broadcast(ASPlayerState->GetPlayerXP());
-	
+	OnHealthChanged.Broadcast(GetASAS()->GetHealth());
+	OnMaxHealthChanged.Broadcast(GetASAS()->GetMaxHealth());
+	OnManaChanged.Broadcast(GetASAS()->GetMana());
+	OnMaxManaChanged.Broadcast(GetASAS()->GetMaxMana());
+	OnXPPercentChangedDelegate.Broadcast(GetASPS()->GetPlayerXP());
 }
 
 // Configure Broadcast events to update the overlay widget components
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
-	ASPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+	GetASPS()->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
 
-	ASPlayerState->OnLevelChangedDelegate.AddLambda(
+	GetASPS()->OnLevelChangedDelegate.AddLambda(
 		[this](int32 NewLevel)
 		{
 			OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
 		}	
 	);
-	
-	const UASAttributeSet* ASAttributeSet = CastChecked<UASAttributeSet>(AttributeSet);
-	
 
 	/* 
 	 *	Vital Attributes
 	 */
 	
 	// Health
-	BindAttributeChange(ASAttributeSet->GetHealthAttribute(), &OnHealthChanged);
+	BindAttributeChange(GetASAS()->GetHealthAttribute(), &OnHealthChanged);
 	
 	// Max Health
-	BindAttributeChange(ASAttributeSet->GetMaxHealthAttribute(), &OnMaxHealthChanged);
+	BindAttributeChange(GetASAS()->GetMaxHealthAttribute(), &OnMaxHealthChanged);
 	
 	// Mana
-	BindAttributeChange(ASAttributeSet->GetManaAttribute(), &OnManaChanged);
+	BindAttributeChange(GetASAS()->GetManaAttribute(), &OnManaChanged);
 	
 	// Max Mana
-	BindAttributeChange(ASAttributeSet->GetMaxManaAttribute(), &OnMaxManaChanged);
+	BindAttributeChange(GetASAS()->GetMaxManaAttribute(), &OnMaxManaChanged);
 	
-	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
+	if (GetASASC())
 	{
-		if (ASASC->bStartupAbilitiesGiven)
+		if (GetASASC()->bStartupAbilitiesGiven)
 		{
-			OnInitializeStartupAbilities(ASASC);
+			BroadcastAbilityInfo();
 		}
 		else
 		{
-			ASASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
+			GetASASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
 		}
 		
-		ASASC->EffectAssetTags.AddLambda(
+		GetASASC()->EffectAssetTags.AddLambda(
 			[this](const FGameplayTagContainer& AssetTags)
 			{
 				for (const FGameplayTag& Tag : AssetTags)
@@ -85,24 +77,9 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	}
 }
 
-void UOverlayWidgetController::OnInitializeStartupAbilities(UASAbilitySystemComponent* ASAbilitySystemComponent)
+void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 {
-	if (!ASAbilitySystemComponent->bStartupAbilitiesGiven) return;
-
-	FForEachAbility BroadcastDelegate;
-	BroadcastDelegate.BindLambda([this, ASAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
-	{
-		FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(ASAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
-		Info.InputTag = ASAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
-		AbilityInfoDelegate.Broadcast(Info);
-	});
-	ASAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
-}
-
-void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
-{
-	const AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
-	const ULevelUpInfo* LevelUpInfo = ASPlayerState->LevelUpInfo;
+	const ULevelUpInfo* LevelUpInfo = GetASPS()->LevelUpInfo;
 	checkf(LevelUpInfo, TEXT("Cannot find LevelUpInfo. Please fill out ASPlayerState Blueprint."));
 
 	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);

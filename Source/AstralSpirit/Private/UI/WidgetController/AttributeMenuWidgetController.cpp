@@ -10,27 +10,24 @@
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
-	const UASAttributeSet* AS = CastChecked<UASAttributeSet>(AttributeSet);
 	check(AttributeInfo);
 
-	for (auto& Pair : AS->TagsToAttributes)
+	for (auto& Pair : GetASAS()->TagsToAttributes)
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 		FASAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
-		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
+		Info.AttributeValue = Pair.Value().GetNumericValue(GetASAS());
 		AttributeInfoDelegate.Broadcast(Info);
 	}
 	
-	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
-	AttributePointsChangedDelegate.Broadcast(ASPlayerState->GetPlayerAttributePoints());
+	AttributePointsChangedDelegate.Broadcast(GetASPS()->GetPlayerAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
-	UASAttributeSet* AS = CastChecked<UASAttributeSet>(AttributeSet);
 	check(AttributeInfo);
 	
-	for (auto& Pair : AS->TagsToAttributes)
+	for (auto& Pair : GetASAS()->TagsToAttributes)
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
 			[this, Pair](const FOnAttributeChangeData& Data)
@@ -39,8 +36,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
-	AASPlayerState* ASPlayerState = CastChecked<AASPlayerState>(PlayerState);
-	ASPlayerState->OnAttributePointsChangedDelegate.AddLambda(
+	GetASPS()->OnAttributePointsChangedDelegate.AddLambda(
 		[this](int32 Points)
 		{
 			AttributePointsChangedDelegate.Broadcast(Points);
@@ -50,8 +46,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 
 void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
 {
-	UASAbilitySystemComponent* ASASC = CastChecked<UASAbilitySystemComponent>(AbilitySystemComponent);
-	ASASC->UpgradeAttribute(AttributeTag);
+	GetASASC()->UpgradeAttribute(AttributeTag);
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,
