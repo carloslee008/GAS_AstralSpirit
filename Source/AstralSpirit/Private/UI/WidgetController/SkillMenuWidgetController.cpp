@@ -5,6 +5,7 @@
 
 void USkillMenuWidgetController::BroadcastInitialValues()
 {
+	BroadcastAbilityInfo();
 }
 
 void USkillMenuWidgetController::BindCallbacksToDependencies()
