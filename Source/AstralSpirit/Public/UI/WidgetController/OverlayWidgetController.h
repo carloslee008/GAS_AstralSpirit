@@ -37,7 +37,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidge
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS()
 class ASTRALSPIRIT_API UOverlayWidgetController : public UASWidgetController
 {
 	GENERATED_BODY()

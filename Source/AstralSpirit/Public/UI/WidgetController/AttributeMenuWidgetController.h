@@ -14,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FASAt
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS()
 class ASTRALSPIRIT_API UAttributeMenuWidgetController : public UASWidgetController
 {
 	GENERATED_BODY()

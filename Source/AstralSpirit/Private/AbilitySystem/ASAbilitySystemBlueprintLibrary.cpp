@@ -9,21 +9,38 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/ASPlayerState.h"
 #include "UI/HUD/ASHUD.h"
-#include "UI/WidgetController/ASWidgetController.h"
 
-UOverlayWidgetController* UASAbilitySystemBlueprintLibrary::GetOverlayWidgetController(
-	const UObject* WorldContextObject)
+bool UASAbilitySystemBlueprintLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject,
+	FWidgetControllerParams& OutWCParams, AASHUD*& OutASHUD)
 {
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		if (AASHUD* ASHUD = Cast<AASHUD>(PC->GetHUD()))
+		OutASHUD = Cast<AASHUD>(PC->GetHUD());
+		if (OutASHUD)
 		{
 			AASPlayerState* PS = PC->GetPlayerState<AASPlayerState>();
 			UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 			UAttributeSet* AS = PS->GetAttributeSet();
-			const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
-			return ASHUD->GetOverlayWidgetController(WidgetControllerParams);
+
+			OutWCParams.PlayerController = PC;
+			OutWCParams.PlayerState = PS;
+			OutWCParams.AbilitySystemComponent = ASC;
+			OutWCParams.AttributeSet = AS;
+			
+			return true;
 		}	
+	}
+	return false;
+}
+
+UOverlayWidgetController* UASAbilitySystemBlueprintLibrary::GetOverlayWidgetController(
+	const UObject* WorldContextObject)
+{
+	FWidgetControllerParams WCParams;
+	AASHUD* ASHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, ASHUD))
+	{
+		return ASHUD->GetOverlayWidgetController(WCParams);
 	}
 	return nullptr;
 }
@@ -31,16 +48,23 @@ UOverlayWidgetController* UASAbilitySystemBlueprintLibrary::GetOverlayWidgetCont
 UAttributeMenuWidgetController* UASAbilitySystemBlueprintLibrary::GetAttributeMenuWidgetController(
 	const UObject* WorldContextObject)
 {
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	FWidgetControllerParams WCParams;
+	AASHUD* ASHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, ASHUD))
 	{
-		if (AASHUD* ASHUD = Cast<AASHUD>(PC->GetHUD()))
-		{
-			AASPlayerState* PS = PC->GetPlayerState<AASPlayerState>();
-			UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
-			UAttributeSet* AS = PS->GetAttributeSet();
-			const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
-			return ASHUD->GetAttributeMenuWidgetController(WidgetControllerParams);
-		}
+		return ASHUD->GetAttributeMenuWidgetController(WCParams);
+	}
+	return nullptr;
+}
+
+USkillMenuWidgetController* UASAbilitySystemBlueprintLibrary::GetSkillMenuWidgetController(
+	const UObject* WorldContextObject)
+{
+	FWidgetControllerParams WCParams;
+	AASHUD* ASHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, ASHUD))
+	{
+		return ASHUD->GetSkillMenuWidgetController(WCParams);
 	}
 	return nullptr;
 }

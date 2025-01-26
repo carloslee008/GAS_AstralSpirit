@@ -42,7 +42,7 @@ struct FWidgetControllerParams
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class ASTRALSPIRIT_API UASWidgetController : public UObject
 {
 	GENERATED_BODY()
