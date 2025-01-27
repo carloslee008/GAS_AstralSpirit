@@ -34,6 +34,7 @@ void UASWidgetController::BroadcastAbilityInfo()
 	{
 		FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(GetASASC()->GetAbilityTagFromSpec(AbilitySpec));
 		Info.InputTag = GetASASC()->GetInputTagFromSpec(AbilitySpec);
+		Info.StatusTag = GetASASC()->GetStatusFromSpec(AbilitySpec);
 		AbilityInfoDelegate.Broadcast(Info);
 	});
 	GetASASC()->ForEachAbility(BroadcastDelegate);
