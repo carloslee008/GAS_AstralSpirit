@@ -71,14 +71,11 @@ USkillMenuWidgetController* UASAbilitySystemBlueprintLibrary::GetSkillMenuWidget
 
 void UASAbilitySystemBlueprintLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
 {
-	//Get the data asset stored in the game mode
-	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (ASGameMode == nullptr) return;
-
+		
 	AActor* AvatarActor = ASC->GetAvatarActor();
 
 	//Get the class information based on character class
-	UCharacterClassInfo* CharacterClassInfo = ASGameMode->CharacterClassInfo;
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 	FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
 	// Apply Primary Attributes
@@ -103,10 +100,7 @@ void UASAbilitySystemBlueprintLibrary::InitializeDefaultAttributes(const UObject
 void UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(const UObject* WorldContextObject,
 	UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
-	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (ASGameMode == nullptr) return;
-	
-	UCharacterClassInfo* CharacterClassInfo = ASGameMode->CharacterClassInfo;
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
@@ -123,8 +117,22 @@ void UASAbilitySystemBlueprintLibrary::GiveStartupAbilities(const UObject* World
 	}
 }
 
+UCharacterClassInfo* UASAbilitySystemBlueprintLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	const AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (ASGameMode == nullptr) return nullptr;
+	return ASGameMode->CharacterClassInfo;
+}
+
+UAbilityInfo* UASAbilitySystemBlueprintLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	const AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (ASGameMode == nullptr) return nullptr;
+	return ASGameMode->AbilityInfo;
+}
+
 int32 UASAbilitySystemBlueprintLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,
-	ECharacterClass CharacterClass, int32 CharacterLevel)
+                                                                    ECharacterClass CharacterClass, int32 CharacterLevel)
 {
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (ASGameMode == nullptr) return 0;

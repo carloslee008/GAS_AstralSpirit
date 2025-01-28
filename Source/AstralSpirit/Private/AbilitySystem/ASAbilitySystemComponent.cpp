@@ -22,7 +22,7 @@ void UASAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<U
 		if (UASGameplayAbility* ASAbility = Cast<UASGameplayAbility>(AbilitySpec.Ability))
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(ASAbility->StartupInputTag);
-			AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Unlocked);
+			AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Equipped);
 			GiveAbility(AbilitySpec);
 		}
 	}
