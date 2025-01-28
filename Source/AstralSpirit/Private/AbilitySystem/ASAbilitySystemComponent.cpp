@@ -165,7 +165,7 @@ void UASAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGam
 	}
 }
 
-void UASAbilitySystemComponent::UpgradeAbilityStatuses(int32 Level)
+void UASAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 {
 	UAbilityInfo* AbilityInfo = UASAbilitySystemBlueprintLibrary::GetAbilityInfo(GetAvatarActor());
 
@@ -177,7 +177,9 @@ void UASAbilitySystemComponent::UpgradeAbilityStatuses(int32 Level)
 		{
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
 			AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Eligible);
+			GiveAbility(AbilitySpec);
 			MarkAbilitySpecDirty(AbilitySpec);
+			ClientUpdateAbilityStatus(Info.AbilityTag, FASGameplayTags::Get().Abilities_Status_Eligible);
 		}
 	}
 }
@@ -191,6 +193,12 @@ void UASAbilitySystemComponent::OnRep_ActivateAbilities()
 		bStartupAbilitiesGiven = true;
 		AbilitiesGivenDelegate.Broadcast();
 	}
+}
+
+void UASAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StatusTag)
+{
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
 }
 
 void UASAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,

@@ -90,6 +90,11 @@ void AASCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
 	check(ASPlayerState);
 	ASPlayerState->AddToLevel(InPlayerLevel);
+
+	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(GetAbilitySystemComponent()))
+	{
+		ASASC->UpdateAbilityStatuses(ASPlayerState->GetPlayerLevel());
+	}
 }
 
 void AASCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
