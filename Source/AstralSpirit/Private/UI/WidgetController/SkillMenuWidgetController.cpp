@@ -5,10 +5,12 @@
 
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "Player/ASPlayerState.h"
 
 void USkillMenuWidgetController::BroadcastInitialValues()
 {
 	BroadcastAbilityInfo();
+	SkillPointsChanged.Broadcast(GetASPS()->GetPlayerSkillPoints());
 }
 
 void USkillMenuWidgetController::BindCallbacksToDependencies()
@@ -21,5 +23,10 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 			Info.StatusTag = StatusTag;
 			AbilityInfoDelegate.Broadcast(Info);
 		}
+	});
+
+	GetASPS()->OnSkillPointsChangedDelegate.AddLambda([this](int32 SkillPoints)
+	{
+		SkillPointsChanged.Broadcast(SkillPoints);
 	});
 }

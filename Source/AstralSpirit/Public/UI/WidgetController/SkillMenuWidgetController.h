@@ -16,5 +16,8 @@ class ASTRALSPIRIT_API USkillMenuWidgetController : public UASWidgetController
 public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerStatChangedSignature SkillPointsChanged;
 	
 };
