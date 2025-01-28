@@ -5,7 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ASGameplayTags.h"
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "AstralSpirit/ASLogChannels.h"
 #include "Interaction/PlayerInterface.h"
 
@@ -122,6 +124,22 @@ FGameplayTag UASAbilitySystemComponent::GetStatusFromSpec(const FGameplayAbility
 	return FGameplayTag();
 }
 
+FGameplayAbilitySpec* UASAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTagExact(AbilityTag))
+			{
+				return &AbilitySpec;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void UASAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
 {
 	if (GetAvatarActor()->Implements<UPlayerInterface>())
@@ -144,6 +162,23 @@ void UASAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGam
 	if (GetAvatarActor()->Implements<UPlayerInterface>())
 	{
 		IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
+	}
+}
+
+void UASAbilitySystemComponent::UpgradeAbilityStatuses(int32 Level)
+{
+	UAbilityInfo* AbilityInfo = UASAbilitySystemBlueprintLibrary::GetAbilityInfo(GetAvatarActor());
+
+	for (const FASAbilityInfo& Info : AbilityInfo->AbilityInformation)
+	{
+		if (!Info.AbilityTag.IsValid()) continue;
+		if (Level < Info.LevelRequirement) continue;
+		if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
+			AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Eligible);
+			MarkAbilitySpecDirty(AbilitySpec);
+		}
 	}
 }
 
