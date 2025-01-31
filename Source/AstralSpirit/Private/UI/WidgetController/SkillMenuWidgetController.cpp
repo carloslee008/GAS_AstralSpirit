@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/SkillMenuWidgetController.h"
 
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Player/ASPlayerState.h"
@@ -29,4 +30,64 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 	{
 		SkillPointsChanged.Broadcast(SkillPoints);
 	});
+}
+
+void USkillMenuWidgetController::SkillSelected(const FGameplayTag& AbilityTag)
+{
+	const FASGameplayTags GameplayTags = FASGameplayTags::Get();
+	const int32 SkillPoints = GetASPS()->GetPlayerSkillPoints();
+	FGameplayTag AbilityStatus;
+
+	const bool bTagValid = AbilityTag.IsValid();
+	const bool bTagNone = AbilityTag.MatchesTag(FASGameplayTags::Get().Abilities_None);
+	const FGameplayAbilitySpec* AbilitySpec = GetASASC()->GetSpecFromAbilityTag(AbilityTag);
+	const bool bSpecValid = AbilitySpec != nullptr;
+
+	if (!bTagValid || bTagNone || !bSpecValid)
+	{
+		AbilityStatus = GameplayTags.Abilities_Status_Locked;
+	}
+	else
+	{
+		AbilityStatus = GetASASC()->GetStatusFromSpec(*AbilitySpec);
+	}
+
+	bool bEnableSkillPoints = false;
+	bool bEnableEquipped = false;
+	ShouldEnableButtons(AbilityStatus, SkillPoints, bEnableSkillPoints, bEnableEquipped);
+	SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
+	
+	
+}
+
+void USkillMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints,
+	bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton)
+{
+	const FASGameplayTags GameplayTags = FASGameplayTags::Get();
+
+	bShouldEnableSkillPointsButton = false;
+	bShouldEnableEquipButton = false;
+	if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Equipped))
+	{
+		bShouldEnableEquipButton = true;
+		if (SkillPoints > 0)
+		{
+			bShouldEnableSkillPointsButton = true;
+		}
+	}
+	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+	{
+		if (SkillPoints > 0)
+		{
+			bShouldEnableSkillPointsButton = true;
+		}
+	}
+	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+	{
+		bShouldEnableEquipButton = true;
+		if (SkillPoints > 0)
+		{
+			bShouldEnableSkillPointsButton = true;
+		}
+	}
 }

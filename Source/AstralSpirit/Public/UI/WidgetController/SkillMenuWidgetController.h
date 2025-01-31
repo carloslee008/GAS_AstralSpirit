@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UI/WidgetController/ASWidgetController.h"
+#include "GameplayTagContainer.h"
 #include "SkillMenuWidgetController.generated.h"
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool, bEquippedButtonEnabled);
 
 /**
  * 
@@ -19,5 +23,15 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStatChangedSignature SkillPointsChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FSkillSelectedSignature SkillSelectedDelegate;
+
+	UFUNCTION(BlueprintCallable)
+	void SkillSelected(const FGameplayTag& AbilityTag);
+
+private:
+
+	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints, bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton);
 	
 };
