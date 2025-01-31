@@ -3,12 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ASGameplayTags.h"
 #include "UI/WidgetController/ASWidgetController.h"
 #include "GameplayTagContainer.h"
 #include "SkillMenuWidgetController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool, bEquippedButtonEnabled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool,
+                                             bEquippedButtonEnabled);
+
+struct FSelectedSkill
+{
+	FGameplayTag Ability = FGameplayTag();
+	FGameplayTag Status = FGameplayTag();
+};
 
 /**
  * 
@@ -33,5 +41,7 @@ public:
 private:
 
 	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints, bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton);
+	FSelectedSkill SelectedSkill = { FASGameplayTags::Get().Abilities_None, FASGameplayTags::Get().Abilities_Status_Locked };
+	int32 CurrentSkillPoints = 0;
 	
 };

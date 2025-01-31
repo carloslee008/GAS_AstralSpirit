@@ -18,6 +18,14 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 {
 	GetASASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
 	{
+		if (SelectedSkill.Ability.MatchesTagExact(AbilityTag))
+		{
+			SelectedSkill.Status = StatusTag;
+			bool bEnableSkillPoints = false;
+			bool bEnableEquipped = false;
+			ShouldEnableButtons(StatusTag, CurrentSkillPoints, bEnableSkillPoints, bEnableEquipped);
+			SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
+		}
 		if (AbilityInfo)
 		{
 			FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
@@ -29,6 +37,12 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 	GetASPS()->OnSkillPointsChangedDelegate.AddLambda([this](int32 SkillPoints)
 	{
 		SkillPointsChanged.Broadcast(SkillPoints);
+		CurrentSkillPoints = SkillPoints;
+
+		bool bEnableSkillPoints = false;
+		bool bEnableEquipped = false;
+		ShouldEnableButtons(SelectedSkill.Status, CurrentSkillPoints, bEnableSkillPoints, bEnableEquipped);
+		SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
 	});
 }
 
@@ -52,11 +66,12 @@ void USkillMenuWidgetController::SkillSelected(const FGameplayTag& AbilityTag)
 		AbilityStatus = GetASASC()->GetStatusFromSpec(*AbilitySpec);
 	}
 
+	SelectedSkill.Ability = AbilityTag;
+	SelectedSkill.Status = AbilityStatus;
 	bool bEnableSkillPoints = false;
 	bool bEnableEquipped = false;
 	ShouldEnableButtons(AbilityStatus, SkillPoints, bEnableSkillPoints, bEnableEquipped);
 	SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
-	
 	
 }
 
