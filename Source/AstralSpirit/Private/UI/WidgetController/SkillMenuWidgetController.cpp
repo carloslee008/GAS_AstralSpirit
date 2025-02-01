@@ -16,7 +16,7 @@ void USkillMenuWidgetController::BroadcastInitialValues()
 
 void USkillMenuWidgetController::BindCallbacksToDependencies()
 {
-	GetASASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+	GetASASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 NewLevel)
 	{
 		if (SelectedSkill.Ability.MatchesTagExact(AbilityTag))
 		{
@@ -75,8 +75,16 @@ void USkillMenuWidgetController::SkillSelected(const FGameplayTag& AbilityTag)
 	
 }
 
+void USkillMenuWidgetController::SpendPointButtonPressed()
+{
+	if (GetASASC())
+	{
+		GetASASC()->ServerSpendSkillPoint(SelectedSkill.Ability);
+	}
+}
+
 void USkillMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints,
-	bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton)
+                                                     bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton)
 {
 	const FASGameplayTags GameplayTags = FASGameplayTags::Get();
 

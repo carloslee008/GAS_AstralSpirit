@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillSelected(const FGameplayTag& AbilityTag);
 
+	UFUNCTION(BlueprintCallable)
+	void SpendPointButtonPressed();
+
 private:
 
 	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints, bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton);
