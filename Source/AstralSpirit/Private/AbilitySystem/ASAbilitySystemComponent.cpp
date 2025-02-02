@@ -217,6 +217,25 @@ void UASAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGame
 	}
 }
 
+bool UASAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription,
+	FString& OutNextLevelDescription)
+{
+	if (const FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		if (UASGameplayAbility* ASAbility = Cast<UASGameplayAbility>(AbilitySpec->Ability))
+		{
+			OutDescription = ASAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDescription = ASAbility->GetNextLevelDescription(AbilitySpec->Level + 1);
+			return true;
+		}	
+	}
+	// Locked Ability
+	const UAbilityInfo* AbilityInfo = UASAbilitySystemBlueprintLibrary::GetAbilityInfo(GetAvatarActor());
+	OutDescription = UASGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	OutNextLevelDescription = FString();
+	return false;
+}
+
 void UASAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();

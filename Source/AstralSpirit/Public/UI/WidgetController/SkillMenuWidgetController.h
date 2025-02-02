@@ -9,8 +9,8 @@
 #include "SkillMenuWidgetController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool,
-                                             bEquippedButtonEnabled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool,
+                                             bEquippedButtonEnabled, FString, DescriptionString, FString, NextLevelDescriptionString);
 
 struct FSelectedSkill
 {

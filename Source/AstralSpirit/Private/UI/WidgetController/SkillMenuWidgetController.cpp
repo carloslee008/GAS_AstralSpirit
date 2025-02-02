@@ -24,7 +24,10 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 			bool bEnableSkillPoints = false;
 			bool bEnableEquipped = false;
 			ShouldEnableButtons(StatusTag, CurrentSkillPoints, bEnableSkillPoints, bEnableEquipped);
-			SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
+			FString Description;
+			FString NextLevelDescription;
+			GetASASC()->GetDescriptionsByAbilityTag(AbilityTag, Description, NextLevelDescription);
+			SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped, Description, NextLevelDescription);
 		}
 		if (AbilityInfo)
 		{
@@ -42,7 +45,10 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 		bool bEnableSkillPoints = false;
 		bool bEnableEquipped = false;
 		ShouldEnableButtons(SelectedSkill.Status, CurrentSkillPoints, bEnableSkillPoints, bEnableEquipped);
-		SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
+		FString Description;
+		FString NextLevelDescription;
+		GetASASC()->GetDescriptionsByAbilityTag(SelectedSkill.Ability, Description, NextLevelDescription);
+		SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped, Description, NextLevelDescription);
 	});
 }
 
@@ -71,7 +77,10 @@ void USkillMenuWidgetController::SkillSelected(const FGameplayTag& AbilityTag)
 	bool bEnableSkillPoints = false;
 	bool bEnableEquipped = false;
 	ShouldEnableButtons(AbilityStatus, SkillPoints, bEnableSkillPoints, bEnableEquipped);
-	SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped);
+	FString Description;
+	FString NextLevelDescription;
+	GetASASC()->GetDescriptionsByAbilityTag(AbilityTag, Description, NextLevelDescription);
+	SkillSelectedDelegate.Broadcast(bEnableSkillPoints, bEnableEquipped, Description, NextLevelDescription);
 	
 }
 
