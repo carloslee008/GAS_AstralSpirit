@@ -9,6 +9,69 @@
 #include "Actor/ASProjectile.h"
 #include "Interaction/CombatInterface.h"
 
+FString UASProjectileSpell::GetDescription(int32 Level)
+{
+	const int32 Damage = DamageTypes[FASGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
+	if (Level == 1)
+	{
+		return FString::Printf(TEXT(
+				// Title
+				"<Title>Fire Bolt</>\n"
+				// Level
+				"Level: <Level>%d</>\n"
+				// Mana Cost
+
+				// Cooldown
+
+				// Description
+				"<Small> Launches a bolt of fire, exploding on impact and dealing: </>"
+				"<Damage>%d</><Small> fire damage</>"),
+
+				// Values
+				Level,
+				Damage);
+	}
+	return FString::Printf(TEXT(
+			// Title
+			"<Title>Fire Bolt</>\n"
+			// Level
+			"Level: <Level>%d</>\n"
+			// Mana Cost
+
+			// Cooldown
+
+			// Description
+			"<Small> Launches %d bolts of fire, exploding on impact and dealing: </>"
+			"<Damage>%d</><Small> fire damage</>"),
+
+			// Values
+			Level,
+			FMath::Min(Level, MaxNumProjectiles),
+			Damage);
+}
+
+FString UASProjectileSpell::GetNextLevelDescription(int32 Level)
+{
+	const int32 Damage = DamageTypes[FASGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
+	return FString::Printf(TEXT(
+			// Title
+			"<Title>Next Level: </>\n"
+			// Level
+			"Level: <Level>%d</>\n"
+			// Mana Cost
+
+			// Cooldown
+
+			// Description
+			"<Small> Launches %d bolts of fire, exploding on impact and dealing: </>"
+			"<Damage>%d</><Small> fire damage</>"),
+
+			// Values
+			Level,
+			FMath::Min(Level, MaxNumProjectiles),
+			Damage);
+}
+
 void UASProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                          const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                          const FGameplayEventData* TriggerEventData)
