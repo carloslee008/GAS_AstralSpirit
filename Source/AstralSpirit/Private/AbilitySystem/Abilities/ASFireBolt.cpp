@@ -55,7 +55,7 @@ FString UASFireBolt::GetDescription(int32 Level)
 FString UASFireBolt::GetNextLevelDescription(int32 Level)
 {
 	const int32 Damage = GetDamageByDamageType(Level, FASGameplayTags::Get().Damage_Fire);
-	const float ManaCost = GetManaCost(Level);
+	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
 	return FString::Printf(TEXT(
 			// Title
