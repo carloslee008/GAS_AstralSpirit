@@ -92,6 +92,14 @@ void USkillMenuWidgetController::SpendPointButtonPressed()
 	}
 }
 
+void USkillMenuWidgetController::SkillDeselect()
+{
+	SelectedSkill.Ability = FASGameplayTags::Get().Abilities_None;
+	SelectedSkill.Status = FASGameplayTags::Get().Abilities_Status_Locked;
+
+	SkillSelectedDelegate.Broadcast(false, false, FString(), FString());
+}
+
 void USkillMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints,
                                                      bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton)
 {

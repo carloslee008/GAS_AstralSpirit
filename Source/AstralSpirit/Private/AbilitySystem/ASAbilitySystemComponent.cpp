@@ -231,7 +231,16 @@ bool UASAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag& 
 	}
 	// Locked Ability
 	const UAbilityInfo* AbilityInfo = UASAbilitySystemBlueprintLibrary::GetAbilityInfo(GetAvatarActor());
-	OutDescription = UASGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	if (!AbilityTag.IsValid() || AbilityTag.MatchesTagExact(FASGameplayTags::Get().Abilities_None))
+	{
+		// If not valid tag, no description
+		OutDescription = FString();
+	}
+	else
+	{
+		// Get Locked Description (level requirement) if valid tag
+		OutDescription = UASGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	}
 	OutNextLevelDescription = FString();
 	return false;
 }
