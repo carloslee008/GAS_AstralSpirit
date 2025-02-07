@@ -9,8 +9,8 @@
 #include "SkillMenuWidgetController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool,
-                                             bEquippedButtonEnabled, FString, DescriptionString, FString, NextLevelDescriptionString);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool, bEquippedButtonEnabled, FString, DescriptionString, FString, NextLevelDescriptionString);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
 
 struct FSelectedSkill
 {
@@ -35,6 +35,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSkillSelectedSignature SkillSelectedDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FWaitForEquipSelectionSignature WaitForEquipDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FWaitForEquipSelectionSignature StopWaitForEquipDelegate;
+
 	UFUNCTION(BlueprintCallable)
 	void SkillSelected(const FGameplayTag& AbilityTag);
 
@@ -44,10 +50,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillDeselect();
 
+	UFUNCTION(BlueprintCallable)
+	void EquipButtonPressed();
+
 private:
 
 	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints, bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton);
 	FSelectedSkill SelectedSkill = { FASGameplayTags::Get().Abilities_None, FASGameplayTags::Get().Abilities_Status_Locked };
 	int32 CurrentSkillPoints = 0;
+	bool bWaitingForEquipSelection = false;
 	
 };

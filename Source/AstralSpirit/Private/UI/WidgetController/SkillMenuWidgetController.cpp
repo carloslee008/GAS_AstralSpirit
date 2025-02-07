@@ -54,6 +54,13 @@ void USkillMenuWidgetController::BindCallbacksToDependencies()
 
 void USkillMenuWidgetController::SkillSelected(const FGameplayTag& AbilityTag)
 {
+	if (bWaitingForEquipSelection)
+	{
+		const FGameplayTag SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedSkill.Ability).AbilityType;
+        StopWaitForEquipDelegate.Broadcast(SelectedAbilityType);
+		bWaitingForEquipSelection = false;
+	}
+
 	const FASGameplayTags GameplayTags = FASGameplayTags::Get();
 	const int32 SkillPoints = GetASPS()->GetPlayerSkillPoints();
 	FGameplayTag AbilityStatus;
@@ -94,10 +101,25 @@ void USkillMenuWidgetController::SpendPointButtonPressed()
 
 void USkillMenuWidgetController::SkillDeselect()
 {
+	if (bWaitingForEquipSelection)
+	{
+		const FGameplayTag SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedSkill.Ability).AbilityType;
+		StopWaitForEquipDelegate.Broadcast(SelectedAbilityType);
+		bWaitingForEquipSelection = false;
+	}
+		
 	SelectedSkill.Ability = FASGameplayTags::Get().Abilities_None;
 	SelectedSkill.Status = FASGameplayTags::Get().Abilities_Status_Locked;
 
 	SkillSelectedDelegate.Broadcast(false, false, FString(), FString());
+}
+
+void USkillMenuWidgetController::EquipButtonPressed()
+{
+	const FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedSkill.Ability).AbilityType;
+
+	WaitForEquipDelegate.Broadcast(AbilityType);
+	bWaitingForEquipSelection = true;
 }
 
 void USkillMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints,
