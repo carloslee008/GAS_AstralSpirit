@@ -39,7 +39,7 @@ public:
 	FWaitForEquipSelectionSignature WaitForEquipDelegate;
 
 	UPROPERTY(BlueprintAssignable)
-	FWaitForEquipSelectionSignature StopWaitForEquipDelegate;
+	FWaitForEquipSelectionSignature StopWaitingForEquipDelegate;
 
 	UFUNCTION(BlueprintCallable)
 	void SkillSelected(const FGameplayTag& AbilityTag);
@@ -53,11 +53,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipButtonPressed();
 
+	UFUNCTION(BlueprintCallable)
+	void SkillRowButtonPressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType);
+
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot);
+
 private:
 
 	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints, bool& bShouldEnableSkillPointsButton, bool& bShouldEnableEquipButton);
 	FSelectedSkill SelectedSkill = { FASGameplayTags::Get().Abilities_None, FASGameplayTags::Get().Abilities_Status_Locked };
 	int32 CurrentSkillPoints = 0;
 	bool bWaitingForEquipSelection = false;
+	FGameplayTag SelectedSlot;
 	
 };
