@@ -75,6 +75,8 @@ protected:
 
 	void OnXPChanged(int32 NewXP);
 
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot) const;
+
 private:
 	void BindAttributeChange(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate) const;
 };

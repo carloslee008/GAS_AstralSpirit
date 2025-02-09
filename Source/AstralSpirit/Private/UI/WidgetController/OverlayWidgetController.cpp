@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
@@ -48,6 +49,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	
 	if (GetASASC())
 	{
+		GetASASC()->AbilityEquipped.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
 		if (GetASASC()->bStartupAbilitiesGiven)
 		{
 			BroadcastAbilityInfo();
@@ -98,6 +100,29 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 	}
 	
+}
+
+void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status,
+	const FGameplayTag& Slot, const FGameplayTag& PreviousSlot) const
+{
+	const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
+
+	// Clear out the old slot
+	
+	FASAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = PreviousSlot;
+	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+	// Broadcast empty info if PreviousSlot is a valid slot. Only if equipping an already-equipped skill
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	// Fill in the new slot
+	
+	FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = Status;
+	Info.InputTag = Slot;
+	// Broadcast current slot
+	AbilityInfoDelegate.Broadcast(Info);
 }
 
 void UOverlayWidgetController::BindAttributeChange(const FGameplayAttribute& Attribute,
