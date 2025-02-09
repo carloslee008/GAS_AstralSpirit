@@ -11,6 +11,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSkillSelectedSignature, bool, bSkillPointsButtonEnabled, bool, bEquippedButtonEnabled, FString, DescriptionString, FString, NextLevelDescriptionString);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSkillSlotReassignedSignature, const FGameplayTag&, AbilityTag);
+
 
 struct FSelectedSkill
 {
@@ -40,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FWaitForEquipSelectionSignature StopWaitingForEquipDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FSkillSlotReassignedSignature SkillSlotReassignedDelegate;
 
 	UFUNCTION(BlueprintCallable)
 	void SkillSelected(const FGameplayTag& AbilityTag);

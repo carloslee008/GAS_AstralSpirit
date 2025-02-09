@@ -169,6 +169,12 @@ void USkillMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTa
 
 	// Stop animations on the equipped skills row
 	StopWaitingForEquipDelegate.Broadcast(Info.AbilityType);
+
+	// Deselect ability and play sound
+	SkillSlotReassignedDelegate.Broadcast(AbilityTag);
+	
+	// Clear out description boxes and disable buttons
+	SkillDeselect();
 }
 
 void USkillMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SkillPoints,
