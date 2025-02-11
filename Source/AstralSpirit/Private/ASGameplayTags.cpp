@@ -171,6 +171,22 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Debuff_Frozen = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Debuff.Frozen"),
 		FString("Debuff for Frozen"));
+
+	GameplayTags.Debuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Chance"),
+		FString("Debuff Chance"));
+
+	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Damage"),
+		FString("Debuff Damage"));
+
+	GameplayTags.Debuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Duration"),
+		FString("Debuff Duration"));
+	
+	GameplayTags.Debuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Frequency"),
+		FString("Debuff Frequency"));
 	
 
 	/*
@@ -181,6 +197,15 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Secondary_FireResistance);
 	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Lightning, GameplayTags.Attributes_Secondary_LightningResistance);
 	GameplayTags.DamageToResistances.Add(GameplayTags.Damage_Poison, GameplayTags.Attributes_Secondary_PoisonResistance);
+
+	/*
+	 * Map of Damage Types to Debuffs
+	 */
+
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Cold, GameplayTags.Debuff_Frozen);
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Fire, GameplayTags.Debuff_Ignite);
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Lightning, GameplayTags.Debuff_Stun);
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Poison, GameplayTags.Debuff_Slow);
 	
 	/*
 	 * Effects
