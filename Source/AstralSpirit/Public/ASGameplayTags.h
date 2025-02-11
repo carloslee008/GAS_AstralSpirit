@@ -54,6 +54,11 @@ public:
 	FGameplayTag Damage_Poison;
 	FGameplayTag Damage_Physical;
 
+	FGameplayTag Debuff_Ignite;
+	FGameplayTag Debuff_Stun;
+	FGameplayTag Debuff_Slow;
+	FGameplayTag Debuff_Frozen;
+
 	FGameplayTag Abilities_None;
 	
 	FGameplayTag Abilities_Attack;
@@ -87,10 +92,9 @@ public:
 	FGameplayTag Montage_Attack_4;
 
 	TMap<FGameplayTag, FGameplayTag> DamageToResistances;
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
 	
 	FGameplayTag Effects_HitReact;
-	
-protected:
 
 private:
     static FASGameplayTags GameplayTags;

@@ -3,11 +3,9 @@
 
 #include "AbilitySystem/Abilities/ASFireBolt.h"
 
-#include "ASGameplayTags.h"
-
 FString UASFireBolt::GetDescription(int32 Level)
 {
-	const int32 Damage = GetDamageByDamageType(Level, FASGameplayTags::Get().Damage_Fire);
+	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);;
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
 	if (Level == 1)
@@ -29,7 +27,7 @@ FString UASFireBolt::GetDescription(int32 Level)
 				Level,
 				ManaCost,
 				Cooldown,
-				Damage);
+				ScaledDamage);
 	}
 	return FString::Printf(TEXT(
 			// Title
@@ -49,12 +47,12 @@ FString UASFireBolt::GetDescription(int32 Level)
 			ManaCost,
 			Cooldown,
 			FMath::Min(Level, MaxNumProjectiles),
-			Damage);
+			ScaledDamage);
 }
 
 FString UASFireBolt::GetNextLevelDescription(int32 Level)
 {
-	const int32 Damage = GetDamageByDamageType(Level, FASGameplayTags::Get().Damage_Fire);
+	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);;
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
 	return FString::Printf(TEXT(
@@ -75,5 +73,5 @@ FString UASFireBolt::GetNextLevelDescription(int32 Level)
 			ManaCost,
 			Cooldown,
 			FMath::Min(Level, MaxNumProjectiles),
-			Damage);
+			ScaledDamage);
 }

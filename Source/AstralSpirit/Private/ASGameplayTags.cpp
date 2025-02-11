@@ -153,6 +153,27 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FString("Physical Damage Type"));
 
 	/*
+	 * Debuff Types
+	 */
+
+	GameplayTags.Debuff_Ignite = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Ignite"),
+		FString("Debuff for Ignite"));
+
+	GameplayTags.Debuff_Slow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Slow"),
+		FString("Debuff for Slow"));
+
+	GameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Stun"),
+		FString("Debuff for Stun"));
+	
+	GameplayTags.Debuff_Frozen = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Frozen"),
+		FString("Debuff for Frozen"));
+	
+
+	/*
 	 * Map of Damage Types to Resistances
 	 */
 
