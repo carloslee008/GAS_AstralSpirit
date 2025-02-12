@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
+#include "ASAbilityTypes.h"
 #include "GameFramework/Actor.h"
 #include "ASProjectile.generated.h"
 
-struct FGameplayEffectSpecHandle;
 class UNiagaraSystem;
 class USphereComponent;
 class UProjectileMovementComponent;
@@ -24,10 +23,11 @@ public:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	FDamageEffectParams DamageEffectParams;
 
 protected:
 	virtual void BeginPlay() override;
+	void OnHit();
 	virtual void Destroyed() override;
 
 	UFUNCTION()
