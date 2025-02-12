@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ASAbilityTypes.h"
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
 #include "ASDamageGameplayAbility.generated.h"
 
@@ -17,6 +18,8 @@ class ASTRALSPIRIT_API UASDamageGameplayAbility : public UASGameplayAbility
 public:
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
+
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
