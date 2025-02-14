@@ -75,8 +75,22 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 			float TargetDebuffResistance = 0.f;
 			const FGameplayTag& ResistanceTag = GameplayTags.DamageToResistances[DamageType];
 			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(InTagsToDefs[ResistanceTag], EvaluationParameters, TargetDebuffResistance);
-			TargetDebuffResistance = FMath::Max<float>(TargetDebuffResistance, 0.f);
-			const float Debuff = FMath::FRandRange(UE_SMALL_NUMBER, 100.f);
+			const bool bDebuff = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) < SourceDebuffChance;
+			if (bDebuff)
+			{
+				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();
+
+				UASAbilitySystemBlueprintLibrary::SetIsSuccessfulDebuff(ContextHandle, true);
+				UASAbilitySystemBlueprintLibrary::SetDamageType(ContextHandle, DamageType);
+
+				const float DebuffDamage = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Damage, false, -1.f);
+				const float DebuffDuration = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Duration, false, -1.f);
+				const float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency, false, -1.f);
+
+				UASAbilitySystemBlueprintLibrary::SetDebuffDamage(ContextHandle, DebuffDamage);
+				UASAbilitySystemBlueprintLibrary::SetDebuffDuration(ContextHandle, DebuffDuration);
+				UASAbilitySystemBlueprintLibrary::SetDebuffFrequency(ContextHandle, DebuffFrequency);
+			}
 
 		}
 	}

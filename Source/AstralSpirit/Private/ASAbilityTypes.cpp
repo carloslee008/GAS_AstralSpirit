@@ -63,7 +63,7 @@ bool FASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool
 		}
 	}
 
-	Ar.SerializeBits(&RepBits, 13);
+	Ar.SerializeBits(&RepBits, 14);
 
 	if (RepBits & (1 << 0))
 	{

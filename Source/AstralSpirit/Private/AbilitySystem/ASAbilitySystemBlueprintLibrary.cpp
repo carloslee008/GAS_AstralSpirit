@@ -213,26 +213,72 @@ bool UASAbilitySystemBlueprintLibrary::IsCriticalHit(const FGameplayEffectContex
 	return false;
 }
 
-void UASAbilitySystemBlueprintLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
+void UASAbilitySystemBlueprintLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsBlockedHit)
 {
 	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		ASEffectContext->SetIsBlockedHit(InIsBlockedHit);
+		ASEffectContext->SetIsBlockedHit(bInIsBlockedHit);
 	}
 }
 
 void UASAbilitySystemBlueprintLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
-	bool InIsCriticalHit)
+	bool bInIsCriticalHit)
 {
 	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		ASEffectContext->SetIsCriticalHit(InIsCriticalHit);
+		ASEffectContext->SetIsCriticalHit(bInIsCriticalHit);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetIsSuccessfulDebuff(FGameplayEffectContextHandle& EffectContextHandle,
+	bool bInIsSuccessfulDebuff)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetIsSuccessfulDebuff(bInIsSuccessfulDebuff);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetDebuffDamage(FGameplayEffectContextHandle& EffectContextHandle,
+	float InDamage)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetDebuffDamage(InDamage);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetDebuffDuration(FGameplayEffectContextHandle& EffectContextHandle,
+	float InDuration)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetDebuffDuration(InDuration);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetDebuffFrequency(FGameplayEffectContextHandle& EffectContextHandle,
+	float InFrequency)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ASEffectContext->SetDebuffFrequency(InFrequency);
+	}
+}
+
+void UASAbilitySystemBlueprintLibrary::SetDamageType(FGameplayEffectContextHandle& EffectContextHandle,
+	const FGameplayTag& InDamageType)
+{
+	if (FASGameplayEffectContext* ASEffectContext = static_cast<FASGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		const TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(InDamageType);
+		ASEffectContext->SetDamageType(DamageType);
 	}
 }
 
 void UASAbilitySystemBlueprintLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
-	TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius,
-	const FVector& SphereOrigin)
+                                                                  TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius,
+                                                                  const FVector& SphereOrigin)
 {
 	FCollisionQueryParams SphereParams;
 	SphereParams.AddIgnoredActors(ActorsToIgnore);
