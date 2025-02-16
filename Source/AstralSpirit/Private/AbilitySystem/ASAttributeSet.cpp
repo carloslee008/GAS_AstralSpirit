@@ -141,6 +141,8 @@ void UASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
+
+	if (Props.TargetCharacter->Implements<UCombatInterface>() && ICombatInterface::Execute_IsDead(Props.TargetCharacter)) return;
 	
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{

@@ -164,6 +164,7 @@ void AASCharacter::InitAbilityActorInfo()
 	Cast<UASAbilitySystemComponent>(ASPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
 	AbilitySystemComponent = ASPlayerState->GetAbilitySystemComponent();
 	AttributeSet = ASPlayerState->GetAttributeSet();
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 
 	// For local player when in multiplayer
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))

@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,6 +14,10 @@
 AASCharacterBase::AASCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	IgniteDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("IgniteDebuffComponent");
+	IgniteDebuffComponent->SetupAttachment(GetRootComponent());
+	IgniteDebuffComponent->DebuffTag = FASGameplayTags::Get().Debuff_Ignite;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -64,6 +69,7 @@ void AASCharacterBase::MulticastHandleDeath_Implementation()
 
 	Dissolve();
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 void AASCharacterBase::BeginPlay()
@@ -138,6 +144,16 @@ void AASCharacterBase::UpdateMinionCount_Implementation(int32 Amount)
 ECharacterClass AASCharacterBase::GetCharacterClass_Implementation()
 {
 	return CharacterClass;
+}
+
+FOnASCRegistered AASCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnAscRegistered;
+}
+
+FOnDeath* AASCharacterBase::GetOnDeathDelegate()
+{
+	return &OnDeath;
 }
 
 void AASCharacterBase::InitAbilityActorInfo()
