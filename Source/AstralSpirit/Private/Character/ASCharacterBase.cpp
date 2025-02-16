@@ -151,9 +151,9 @@ FOnASCRegistered AASCharacterBase::GetOnASCRegisteredDelegate()
 	return OnAscRegistered;
 }
 
-FOnDeath* AASCharacterBase::GetOnDeathDelegate()
+FOnDeath AASCharacterBase::GetOnDeathDelegate()
 {
-	return &OnDeath;
+	return OnDeath;
 }
 
 void AASCharacterBase::InitAbilityActorInfo()

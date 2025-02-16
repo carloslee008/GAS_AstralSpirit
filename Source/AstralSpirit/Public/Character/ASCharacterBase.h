@@ -40,7 +40,7 @@ public:
 	virtual void UpdateMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
-	virtual FOnDeath* GetOnDeathDelegate() override;
+	virtual FOnDeath GetOnDeathDelegate() override;
 	/** End Combat Interface */
 
 	FOnASCRegistered OnAscRegistered;

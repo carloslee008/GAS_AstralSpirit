@@ -89,5 +89,5 @@ public:
 	
 	// Pure virtual, forced upon anything that implements this, they have to override it
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
-	virtual FOnDeath* GetOnDeathDelegate() = 0;
+	virtual FOnDeath GetOnDeathDelegate() = 0;
 };
