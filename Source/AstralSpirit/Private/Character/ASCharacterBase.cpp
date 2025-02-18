@@ -41,28 +41,30 @@ UAnimMontage* AASCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
-void AASCharacterBase::Die()
+void AASCharacterBase::Die(const FVector& DeathImpulse)
 {
 	// Detach the weapon from character. This is done on Server only
 	if (Weapon)
 	{
 		Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 	}
-	MulticastHandleDeath();
+	MulticastHandleDeath(DeathImpulse);
 }
 
-void AASCharacterBase::MulticastHandleDeath_Implementation()
+void AASCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	Weapon->AddImpulse(DeathImpulse * 0.1f, NAME_None, true);
 
 	// Ragdoll the character
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	GetMesh()->AddImpulse(DeathImpulse, NAME_None, true);
 	
 	// Prevent blocking other characters
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); 

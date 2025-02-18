@@ -138,11 +138,11 @@ int32 AASEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
-void AASEnemy::Die()
+void AASEnemy::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
 	if (ASAIController) ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
-	Super::Die();
+	Super::Die(DeathImpulse);
 }
 
 void AASEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
