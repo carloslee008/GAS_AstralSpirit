@@ -65,9 +65,13 @@ bool FASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool
 		{
 			RepBits |= 1 << 14;
 		}
+		if (!KnockbackForce.IsZero())
+		{
+			RepBits |= 1 << 15;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 15);
+	Ar.SerializeBits(&RepBits, 16);
 
 	if (RepBits & (1 << 0))
 	{
@@ -145,6 +149,10 @@ bool FASGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool
 		DamageType->NetSerialize(Ar, Map, bOutSuccess);
 	}
 	if (RepBits & (1 << 14))
+	{
+		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 15))
 	{
 		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
 	}

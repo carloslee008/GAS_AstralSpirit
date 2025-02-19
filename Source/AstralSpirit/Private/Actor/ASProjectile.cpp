@@ -76,6 +76,17 @@ void AASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 			DamageEffectParams.DeathImpulse = DeathImpulse;
+			const bool bKnockback = FMath::FRandRange(UE_SMALL_NUMBER, 100.f) < DamageEffectParams.KnockbackChance;
+			if (bKnockback)
+			{
+				FRotator Rotation = GetActorRotation();
+				Rotation.Pitch = 45.f;
+				
+				const FVector KnockbackDirection = Rotation.Vector();
+				const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagintude;
+				DamageEffectParams.KnockbackForce = KnockbackForce;
+			}
+			
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 			UASAbilitySystemBlueprintLibrary::ApplyDamageEffect(DamageEffectParams);
 		}

@@ -9,6 +9,7 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Player/ASPlayerController.h"
@@ -178,6 +179,13 @@ void UASAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FASGameplayTags::Get().Abilities_HitReact);
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+			const FVector& KnockbackForce = UASAbilitySystemBlueprintLibrary::GetKnockbackForce(Props.EffectContextHandle);
+			if (!KnockbackForce.IsNearlyZero(1.f))
+			{
+				Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+				Props.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
+			}
 		}
 
 		const bool bBlocked = UASAbilitySystemBlueprintLibrary::IsBlockedHit(Props.EffectContextHandle);
