@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "Actor/ASProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Interaction/CombatInterface.h"
 
 FString UASFireBolt::GetDescription(int32 Level)
@@ -96,8 +97,8 @@ void UASFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, cons
 	if (bOverridePitch) SpawnRotation.Pitch = PitchOverride;
 
 	const FVector Forward = SpawnRotation.Vector();
-
-	TArray<FRotator> Rotations = UASAbilitySystemBlueprintLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, MaxNumProjectiles);
+	const int32 EffectiveNumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
+	TArray<FRotator> Rotations = UASAbilitySystemBlueprintLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, EffectiveNumProjectiles);
 	
 	for (const FRotator& Rot : Rotations)
 	{
@@ -113,8 +114,22 @@ void UASFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, cons
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
-	
+
+		if (bLaunchHomingProjectiles)
+		{
+			if (HomingTarget && HomingTarget->Implements<UCombatInterface>())
+			{
+				Projectile->ProjectileMovement->HomingTargetComponent = HomingTarget->GetRootComponent();
+			}
+			else
+			{
+				Projectile->HomingTargetSceneComponent = NewObject<USceneComponent>(USceneComponent::StaticClass());
+				Projectile->HomingTargetSceneComponent->SetWorldLocation(ProjectileTargetLocation);
+				Projectile->ProjectileMovement->HomingTargetComponent = Projectile->HomingTargetSceneComponent;	
+			}
+			Projectile->ProjectileMovement->HomingAccelerationMagnitude = FMath::FRandRange(HomingAccelerationMin, HomingAccelerationMax);
+			Projectile->ProjectileMovement->bIsHomingProjectile = true;
+		}
 		Projectile->FinishSpawning(SpawnTransform);
-		
 	}
 }
