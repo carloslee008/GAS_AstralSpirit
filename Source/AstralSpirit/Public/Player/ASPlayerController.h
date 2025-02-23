@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerController.h"
 #include "ASPlayerController.generated.h"
 
+class UNiagaraSystem;
+
 USTRUCT(BlueprintType)
 struct FCameraOccludedActor
 {
@@ -137,8 +139,12 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;
 
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
+	
 	void AutoRun();
 
 	UPROPERTY(EditDefaultsOnly)
