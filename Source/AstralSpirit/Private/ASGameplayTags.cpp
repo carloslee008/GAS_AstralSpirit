@@ -239,6 +239,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Lightning.LightningBolt"),
 		FString("Lightning Bolt Ability Tag"));
 
+	GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Electrocute"),
+		FString("Electrocute Ability Tag"));
+
 	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.HitReact"),
 		FString("Hit React Ability Tag"));
@@ -282,6 +286,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Cooldown_Lightning_LightningBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Lightning.LightningBolt"),
 		FString("Lightning Bolt Cooldown Tag"));
+
+	GameplayTags.Cooldown_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Lightning.Electrocute"),
+		FString("Electrocute Cooldown Tag"));
 
 	/*
 	 * Combat Sockets

@@ -101,6 +101,7 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		bIsTargeting = ThisActor ? true : false; // If hovering highlighted actor, true
 		bAutoRunning = false;
 	}
+	if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
 }
 
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
