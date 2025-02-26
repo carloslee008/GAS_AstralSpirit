@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/ASBeamSpell.h"
 
+#include "GameFramework/Character.h"
+
 void UASBeamSpell::StoreMouseDataInfo(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)
@@ -12,14 +14,15 @@ void UASBeamSpell::StoreMouseDataInfo(const FHitResult& HitResult)
 	}
 	else
 	{
-		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }
 
-void UASBeamSpell::StoreOwnerPlayerController()
+void UASBeamSpell::StoreOwnerVariables()
 {
 	if (CurrentActorInfo)
 	{
 		OwnerPlayerController = CurrentActorInfo->PlayerController.Get();
+		OwnerCharacter = Cast<ACharacter>(CurrentActorInfo->AvatarActor);
 	}
 }
