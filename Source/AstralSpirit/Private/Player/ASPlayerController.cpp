@@ -68,6 +68,14 @@ void AASPlayerController::AutoRun()
 
 void AASPlayerController::CursorTrace()
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (LastActor) LastActor->UnHighlightActor();
+		if (ThisActor) ThisActor->UnHighlightActor();
+		LastActor = nullptr;
+		ThisActor = nullptr;
+		return;
+	}
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = ThisActor;
@@ -96,6 +104,10 @@ void AASPlayerController::CursorTrace()
 
 void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
 	if (InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
 	{
 		bIsTargeting = ThisActor ? true : false; // If hovering highlighted actor, true
@@ -106,6 +118,10 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputReleased))
+	{
+		return;
+	}
 	/**
 	 * For non-LMB inputs, activate ability
 	 **/
@@ -141,6 +157,7 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				CachedDestination = NavPath->PathPoints.IsEmpty() ? ControlledPawn->GetActorLocation() : NavPath->PathPoints.Last(); 
 				bAutoRunning = true;
 			}
+			
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 		}
 		FollowTime = 0.f;
@@ -150,6 +167,10 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputHeld))
+	{
+		return;
+	}
 	/**
 	 * For non-LMB inputs
 	 **/
@@ -389,6 +410,10 @@ bool AASPlayerController::OnShowOccludedActor(const FCameraOccludedActor& Occlud
 
 void AASPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
