@@ -158,6 +158,11 @@ FOnDeath AASCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
+USkeletalMeshComponent* AASCharacterBase::GetWeapon_Implementation()
+{
+	return Weapon;
+}
+
 void AASCharacterBase::InitAbilityActorInfo()
 {
 }
