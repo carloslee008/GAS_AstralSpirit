@@ -355,10 +355,13 @@ bool AASPlayerController::HideOccludedActor(const AActor* Actor)
 		FCameraOccludedActor OccludedActor;
 		OccludedActor.Actor = Actor;
 		OccludedActor.StaticMeshComponent = StaticMeshComponent;
-		OccludedActor.Materials = StaticMeshComponent->GetMaterials();
-		OccludedActor.IsOccluded = true;
-		OccludedActors.Add(Actor, OccludedActor);
-		OnHideOccludedActor(OccludedActor);
+		if (StaticMeshComponent)
+		{
+			OccludedActor.Materials = StaticMeshComponent->GetMaterials();
+			OccludedActor.IsOccluded = true;
+			OccludedActors.Add(Actor, OccludedActor);
+			OnHideOccludedActor(OccludedActor);
+		}
 
 		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s does not exist, adding and occluding it now."), *Actor->GetName());
 	}
