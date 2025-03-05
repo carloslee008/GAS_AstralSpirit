@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/ASBeamSpell.h"
 
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -58,4 +59,25 @@ void UASBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			}
 		}
 	}
+}
+
+void UASBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
+{
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
+	ActorsToIgnore.Add(MouseHitActor);
+	
+	TArray<AActor*> OverlappingActors;
+	
+	UASAbilitySystemBlueprintLibrary::GetLivePlayersWithinRadius(
+		GetAvatarActorFromActorInfo(),
+		OverlappingActors,
+		ActorsToIgnore,
+		850.f,
+		MouseHitActor->GetActorLocation());
+
+	// int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() -1, MaxNumShockTargets);
+	int32 NumAdditionalTargets = 5;
+
+	UASAbilitySystemBlueprintLibrary::GetClosestTargets(NumAdditionalTargets, OverlappingActors, OutAdditionalTargets, MouseHitActor->GetActorLocation());
 }

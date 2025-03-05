@@ -333,6 +333,30 @@ void UASAbilitySystemBlueprintLibrary::GetLivePlayersWithinRadius(const UObject*
 	}
 }
 
+void UASAbilitySystemBlueprintLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+{
+	if (Actors.Num() <= MaxTargets)
+	{
+		OutClosestTargets = Actors;
+		return;
+	}
+	
+	if (MaxTargets < 1) return;
+	
+	OutClosestTargets = Actors;
+	Algo::Sort(OutClosestTargets, [&Origin](const AActor* ActorA, const AActor* ActorB)
+	{
+		const float DistanceA = FVector::DistSquared(ActorA->GetActorLocation(), Origin);
+		const float DistanceB = FVector::DistSquared(ActorB->GetActorLocation(), Origin);
+		return DistanceA < DistanceB;
+	});
+	if (OutClosestTargets.Num() > MaxTargets)
+	{
+		// Remove unwanted actors from the end of the array
+		OutClosestTargets.RemoveAt(MaxTargets, OutClosestTargets.Num() - MaxTargets);
+	}
+}
+
 bool UASAbilitySystemBlueprintLibrary::IsSameTeam(AActor* FirstActor, AActor* SecondActor)
 {
 	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
