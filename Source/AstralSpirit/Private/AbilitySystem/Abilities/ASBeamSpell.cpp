@@ -59,6 +59,14 @@ void UASBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			}
 		}
 	}
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(MouseHitActor))
+	{
+		// Only bind if not already bound
+		if (!CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &UASBeamSpell::PrimaryTargetDied))
+		{
+			CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UASBeamSpell::PrimaryTargetDied);
+		}
+	}
 }
 
 void UASBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
@@ -79,5 +87,20 @@ void UASBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
 	// int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() -1, MaxNumShockTargets);
 	int32 NumAdditionalTargets = 5;
 
-	UASAbilitySystemBlueprintLibrary::GetClosestTargets(NumAdditionalTargets, OverlappingActors, OutAdditionalTargets, MouseHitActor->GetActorLocation());
+	UASAbilitySystemBlueprintLibrary::GetClosestTargets(
+		NumAdditionalTargets,
+		OverlappingActors,
+		OutAdditionalTargets,
+		MouseHitActor->GetActorLocation());
+
+	for (AActor* Target : OutAdditionalTargets)
+	{
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Target))
+		{
+			if (!CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &UASBeamSpell::AdditionalTargetDied))
+			{
+				CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UASBeamSpell::PrimaryTargetDied);
+			}
+		}
+	}
 }

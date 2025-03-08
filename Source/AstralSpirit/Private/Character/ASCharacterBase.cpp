@@ -71,7 +71,8 @@ void AASCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathI
 
 	Dissolve();
 	bDead = true;
-	OnDeath.Broadcast(this);
+	IgniteDebuffComponent->Deactivate();
+	OnDeathDelegate.Broadcast(this);
 }
 
 void AASCharacterBase::BeginPlay()
@@ -153,9 +154,9 @@ FOnASCRegistered AASCharacterBase::GetOnASCRegisteredDelegate()
 	return OnAscRegistered;
 }
 
-FOnDeath AASCharacterBase::GetOnDeathDelegate()
+FOnDeathSignature& AASCharacterBase::GetOnDeathDelegate()
 {
-	return OnDeath;
+	return OnDeathDelegate;
 }
 
 USkeletalMeshComponent* AASCharacterBase::GetWeapon_Implementation()
