@@ -84,8 +84,8 @@ void UASBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
 		850.f,
 		MouseHitActor->GetActorLocation());
 
-	// int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() -1, MaxNumShockTargets);
-	int32 NumAdditionalTargets = 5;
+	int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() - 1, MaxNumShockTargets);
+	
 
 	UASAbilitySystemBlueprintLibrary::GetClosestTargets(
 		NumAdditionalTargets,
@@ -99,8 +99,23 @@ void UASBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
 		{
 			if (!CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &UASBeamSpell::AdditionalTargetDied))
 			{
-				CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UASBeamSpell::PrimaryTargetDied);
+				CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UASBeamSpell::AdditionalTargetDied);
 			}
+		}
+	}
+}
+
+void UASBeamSpell::RemoveOnDeathNotify(AActor* Actor)
+{
+	if (const auto CombatInterface = Cast<ICombatInterface>(Actor))
+	{
+		if (CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &ThisClass::AdditionalTargetDied))
+		{
+			CombatInterface->GetOnDeathDelegate().RemoveDynamic(this, &ThisClass::AdditionalTargetDied);
+		}
+		if (CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &ThisClass::PrimaryTargetDied))
+		{
+			CombatInterface->GetOnDeathDelegate().RemoveDynamic(this, &ThisClass::PrimaryTargetDied);
 		}
 	}
 }
