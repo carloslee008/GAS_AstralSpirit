@@ -11,6 +11,7 @@
 #include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "UI/HUD/ASHUD.h"
@@ -155,6 +156,41 @@ int32 AASCharacter::GetPlayerLevel_Implementation()
 	const AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
 	check(ASPlayerState);
 	return ASPlayerState->GetPlayerLevel();
+}
+
+void AASCharacter::OnRep_Stunned()
+{
+	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
+		FGameplayTagContainer BlockedTags;
+		BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+		if (bIsStunned)
+		{
+			ASASC->AddLooseGameplayTags(BlockedTags);
+			StunDebuffComponent->Activate();
+		}
+		else
+		{
+			ASASC->RemoveLooseGameplayTags(BlockedTags);
+			StunDebuffComponent->Deactivate();
+		}
+	}
+}
+
+void AASCharacter::OnRep_Ignited()
+{
+	if (bIsIgnited)
+	{
+		IgniteDebuffComponent->Activate();
+	}
+	else
+	{
+		IgniteDebuffComponent->Deactivate();
+	}
 }
 
 void AASCharacter::InitAbilityActorInfo()

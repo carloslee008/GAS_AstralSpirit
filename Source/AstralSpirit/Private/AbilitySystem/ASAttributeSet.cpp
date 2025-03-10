@@ -248,6 +248,8 @@ void UASAttributeSet::Debuff(const FEffectProperties& Props)
 		FASGameplayEffectContext* ASContext = static_cast<FASGameplayEffectContext*>(MutableSpec->GetContext().Get());
 		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
 		ASContext->SetDamageType(DebuffDamageType);
+		const FGameplayTagContainer AbilitiesToCancelTags(GameplayTags.Abilities);
+		Props.TargetASC->CancelAbilities(&AbilitiesToCancelTags);
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
 	}
 

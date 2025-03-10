@@ -21,6 +21,10 @@ AASCharacterBase::AASCharacterBase()
 	IgniteDebuffComponent->SetupAttachment(GetRootComponent());
 	IgniteDebuffComponent->DebuffTag = FASGameplayTags::Get().Debuff_Ignite;
 
+	StunDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");
+	StunDebuffComponent->SetupAttachment(GetRootComponent());
+	StunDebuffComponent->DebuffTag = FASGameplayTags::Get().Debuff_Stun;
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -38,6 +42,7 @@ void AASCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AASCharacterBase, bIsStunned);
+	DOREPLIFETIME(AASCharacterBase, bIsIgnited);
 }
 
 UAbilitySystemComponent* AASCharacterBase::GetAbilitySystemComponent() const
@@ -81,6 +86,7 @@ void AASCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathI
 	Dissolve();
 	bDead = true;
 	IgniteDebuffComponent->Deactivate();
+	StunDebuffComponent->Deactivate();
 	OnDeathDelegate.Broadcast(this);
 }
 
@@ -90,25 +96,12 @@ void AASCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewC
 	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
 }
 
+void AASCharacterBase::OnRep_Ignited()
+{
+}
+
 void AASCharacterBase::OnRep_Stunned()
 {
-	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
-	{
-		const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
-		FGameplayTagContainer BlockedTags;
-		BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
-		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
-		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
-		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
-		if (bIsStunned)
-		{
-			ASASC->AddLooseGameplayTags(BlockedTags);
-		}
-		else
-		{
-			ASASC->RemoveLooseGameplayTags(BlockedTags);
-		}
-	}
 }
 
 void AASCharacterBase::BeginPlay()
@@ -186,7 +179,7 @@ ECharacterClass AASCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
-FOnASCRegistered AASCharacterBase::GetOnASCRegisteredDelegate()
+FOnASCRegistered& AASCharacterBase::GetOnASCRegisteredDelegate()
 {
 	return OnAscRegistered;
 }

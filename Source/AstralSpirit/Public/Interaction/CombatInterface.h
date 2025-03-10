@@ -89,7 +89,7 @@ public:
 	ECharacterClass GetCharacterClass();
 	
 	// Pure virtual, forced upon anything that implements this, they have to override it
-	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInShockLoop(bool bInLoop);
