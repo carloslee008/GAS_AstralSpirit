@@ -90,6 +90,27 @@ void AASCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewC
 	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
 }
 
+void AASCharacterBase::OnRep_Stunned()
+{
+	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
+		FGameplayTagContainer BlockedTags;
+		BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+		if (bIsStunned)
+		{
+			ASASC->AddLooseGameplayTags(BlockedTags);
+		}
+		else
+		{
+			ASASC->RemoveLooseGameplayTags(BlockedTags);
+		}
+	}
+}
+
 void AASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
