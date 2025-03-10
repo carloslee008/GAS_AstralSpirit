@@ -23,6 +23,7 @@ class ASTRALSPIRIT_API AASCharacterBase : public ACharacter, public IAbilitySyst
 
 public:
 	AASCharacterBase();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
@@ -53,6 +54,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TArray<FTaggedMontage> AttackMontages;
 
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	bool bIsStunned = false;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -72,6 +76,11 @@ protected:
 	FName TailSocketName;
 
 	bool bDead;
+		
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 600.f;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

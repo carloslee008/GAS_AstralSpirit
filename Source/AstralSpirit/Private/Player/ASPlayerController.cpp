@@ -49,6 +49,13 @@ void AASPlayerController::ShowDamageNumber_Implementation(float DamageAmount, AC
 void AASPlayerController::AutoRun()
 {
 	if (!bAutoRunning) return;
+
+	// Check if blocking the input and if so then cancel AutoRunning
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputPressed))
+	{
+		bAutoRunning = false;
+		return;
+	}
 	if (APawn* ControlledPawn = GetPawn())
 	{
 		// Closest location on the spline to ControlledPawn

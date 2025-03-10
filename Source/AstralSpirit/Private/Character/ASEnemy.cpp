@@ -34,6 +34,8 @@ AASEnemy::AASEnemy()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
 
+	BaseWalkSpeed = 250.f;
+	
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
@@ -54,7 +56,6 @@ void AASEnemy::PossessedBy(AController* NewController)
 void AASEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
 	if (HasAuthority())
 	{
@@ -107,6 +108,8 @@ void AASEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UASAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+	AbilitySystemComponent->RegisterGameplayTagEvent(FASGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AASEnemy::StunTagChanged);
+	
 	if (HasAuthority())
 	{
 		InitializeDefaultAttributes();	
@@ -117,6 +120,15 @@ void AASEnemy::InitAbilityActorInfo()
 void AASEnemy::InitializeDefaultAttributes() const
 {
 	UASAbilitySystemBlueprintLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+void AASEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+	if (ASAIController && ASAIController->GetBlackboardComponent())
+	{
+		ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
+	}
 }
 
 void AASEnemy::HighlightActor()

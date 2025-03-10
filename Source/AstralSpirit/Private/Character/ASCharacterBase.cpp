@@ -9,7 +9,9 @@
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 AASCharacterBase::AASCharacterBase()
 {
@@ -29,6 +31,13 @@ AASCharacterBase::AASCharacterBase()
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+}
+
+void AASCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AASCharacterBase, bIsStunned);
 }
 
 UAbilitySystemComponent* AASCharacterBase::GetAbilitySystemComponent() const
@@ -75,9 +84,16 @@ void AASCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathI
 	OnDeathDelegate.Broadcast(this);
 }
 
+void AASCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+}
+
 void AASCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
 FVector AASCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)

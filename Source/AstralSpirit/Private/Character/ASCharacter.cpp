@@ -4,6 +4,7 @@
 #include "Character/ASCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -165,6 +166,7 @@ void AASCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = ASPlayerState->GetAbilitySystemComponent();
 	AttributeSet = ASPlayerState->GetAttributeSet();
 	OnAscRegistered.Broadcast(AbilitySystemComponent);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FASGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AASCharacter::StunTagChanged);
 
 	// For local player when in multiplayer
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
