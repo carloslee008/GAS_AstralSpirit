@@ -46,6 +46,8 @@ public:
 	/** End Combat Interface */
 
 	FOnASCRegistered OnAscRegistered;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnDeathSignature OnDeathDelegate;
 	
 	UFUNCTION(NetMulticast, Reliable)

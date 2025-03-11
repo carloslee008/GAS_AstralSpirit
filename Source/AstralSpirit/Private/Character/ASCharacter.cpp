@@ -158,6 +158,17 @@ int32 AASCharacter::GetPlayerLevel_Implementation()
 	return ASPlayerState->GetPlayerLevel();
 }
 
+void AASCharacter::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		PlayerController->DisableInput(PlayerController);
+	}
+	
+	Super::MulticastHandleDeath_Implementation(DeathImpulse);
+}
+
 void AASCharacter::OnRep_Stunned()
 {
 	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
