@@ -11,10 +11,11 @@ void UASPassiveAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                         const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo())))
+	
+	UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()));
+	if (ASASC && !ASASC->DeactivatePassiveAbility.IsBoundToObject(this))
 	{
-		ASASC->DeactivatePassiveAbility.AddUObject(this, &UASPassiveAbility::ReceiveDeactivate);
+		ASASC->DeactivatePassiveAbility.AddUObject(this, &ThisClass::ReceiveDeactivate);
 	}
 }
 
@@ -22,6 +23,6 @@ void UASPassiveAbility::ReceiveDeactivate(const FGameplayTag& AbilityTag)
 {
 	if (AbilityTags.HasTagExact(AbilityTag))
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }

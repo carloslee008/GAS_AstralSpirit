@@ -259,9 +259,9 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Passive.ManaSiphon"),
 		FString("Mana Siphon"));
 
-	GameplayTags.Abilities_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Passive.HaloOfProtection"),
-		FString("Halo Of Protection"));
+	GameplayTags.Abilities_Passive_AstralProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Passive.AstralProtection"),
+		FString("Astral Protection"));
 
 	/*
 	 * Ability Statuses and Types
