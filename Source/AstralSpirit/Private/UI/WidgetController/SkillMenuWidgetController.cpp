@@ -128,7 +128,7 @@ void USkillMenuWidgetController::EquipButtonPressed()
 	// Save selected slot if it's an equipped ability
 	if (SelectedStatus.MatchesTagExact(FASGameplayTags::Get().Abilities_Status_Equipped))
 	{
-		SelectedSlot = GetASASC()->GetInputTagFromAbilityTag(SelectedSkill.Ability);
+		SelectedSlot = GetASASC()->GetSlotFromAbilityTag(SelectedSkill.Ability);
 	}
 	
 }
