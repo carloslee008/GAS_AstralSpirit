@@ -7,6 +7,7 @@
 #include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "AbilitySystem/Passive/PassiveNiagaraComponent.h"
 #include "AstralSpirit/AstralSpirit.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,6 +35,17 @@ AASCharacterBase::AASCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	EffectAttachComponent = CreateDefaultSubobject<USceneComponent>("EffectAttachPoint");
+	EffectAttachComponent->SetupAttachment(GetRootComponent());
+	EffectAttachComponent->SetUsingAbsoluteRotation(true);
+	EffectAttachComponent->SetWorldRotation(FRotator::ZeroRotator);
+	AstralProtectionNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("AstralProtectionComponent");
+	AstralProtectionNiagaraComponent->SetupAttachment(EffectAttachComponent);
+	LifeSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("LifeSiphonNiagaraComponent");
+	LifeSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
+	ManaSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("ManaSiphonNiagaraComponent");
+	ManaSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
 
 }
 

@@ -214,6 +214,11 @@ void UASAbilitySystemComponent::AssignSlotToAbility(FGameplayAbilitySpec& Spec, 
 	Spec.DynamicAbilityTags.AddTag(Slot);
 }
 
+void UASAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag, bool bActivate)
+{
+	ActivatePassiveEffect.Broadcast(AbilityTag, bActivate);
+}
+
 FGameplayAbilitySpec* UASAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
 {
 	FScopedAbilityListLock ActiveScopeLock(*this);
@@ -307,8 +312,7 @@ void UASAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGame
 	}
 }
 
-void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag,
-	const FGameplayTag& Slot)
+void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& Slot)
 {
 	if (FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
 	{
@@ -319,7 +323,9 @@ void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepla
 		const bool bStatusValid = Status == GameplayTags.Abilities_Status_Equipped || Status == GameplayTags.Abilities_Status_Unlocked;
 		if (bStatusValid)
 		{
-
+			
+			// Handle Activation/Deactivation for passive abilities
+			
 			if (!SlotIsEmpty(Slot)) // There is an ability in this slot already. Deactivate and clear its slot.
 			{
 				FGameplayAbilitySpec* SpecWithSlot = GetSpecWithSlot(Slot);
@@ -333,6 +339,7 @@ void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepla
 					}
 					if (IsPassiveAbility(*SpecWithSlot))
 					{
+						MulticastActivatePassiveEffect(GetAbilityTagFromSpec(*SpecWithSlot), false);
 						DeactivatePassiveAbility.Broadcast(GetAbilityTagFromSpec(*SpecWithSlot));
 					}
 					ClearSlot(SpecWithSlot);
@@ -347,6 +354,7 @@ void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepla
 				if (IsPassiveAbility(*AbilitySpec))
 				{
 					TryActivateAbility(AbilitySpec->Handle);
+					MulticastActivatePassiveEffect(AbilityTag, true);
 				}
 			}
 			AssignSlotToAbility(*AbilitySpec, Slot);

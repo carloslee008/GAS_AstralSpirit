@@ -8,6 +8,7 @@
 #include "Interaction/CombatInterface.h"
 #include "ASCharacterBase.generated.h"
 
+class UPassiveNiagaraComponent;
 class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UGameplayAbility;
@@ -158,5 +159,17 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> AstralProtectionNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> LifeSiphonNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> ManaSiphonNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> EffectAttachComponent;
 
 };
