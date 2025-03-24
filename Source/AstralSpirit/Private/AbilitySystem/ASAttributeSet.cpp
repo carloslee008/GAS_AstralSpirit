@@ -177,6 +177,11 @@ void UASAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		else
 		{
 			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(FASGameplayTags::Get().Abilities_Passive_LifeSiphon);
+			if (Props.SourceASC->HasAnyMatchingGameplayTags(TagContainer))
+			{
+				SendLifeSiphonEvent(Props);
+			}
 			TagContainer.AddTag(FASGameplayTags::Get().Abilities_HitReact);
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 
@@ -324,6 +329,21 @@ void UASAttributeSet::SendXPEvent(const FEffectProperties& Props)
 		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Payload);
 	}
+}
+
+void UASAttributeSet::SendLifeSiphonEvent(const FEffectProperties& Props)
+{
+	const FASGameplayTags& GameplayTags = FASGameplayTags::Get();
+	FGameplayEventData Payload;
+	Payload.EventTag = GameplayTags.Attributes_Vital_Health;
+	Payload.EventMagnitude = 2.f;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Vital_Health, Payload);
+	
+}
+
+void UASAttributeSet::SendManaSiphonEvent(const FEffectProperties& Props)
+{
 }
 
 void UASAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const

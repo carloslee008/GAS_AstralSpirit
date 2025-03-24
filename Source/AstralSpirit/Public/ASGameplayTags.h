@@ -36,6 +36,9 @@ public:
 	FGameplayTag Attributes_Secondary_LightningResistance;
 	FGameplayTag Attributes_Secondary_PoisonResistance;
 
+	FGameplayTag Attributes_Vital_Health;
+	FGameplayTag Attributes_Vital_Mana;
+
 	FGameplayTag Attributes_Meta_IncomingXP;
 
 	FGameplayTag InputTag_LMB;
