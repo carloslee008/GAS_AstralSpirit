@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ASPlayerController.generated.h"
 
+class AMagicCircle;
 class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
@@ -50,6 +51,15 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlocked, bool bCriticalHit);
+	
+	UFUNCTION(BlueprintCallable)
+	void SyncOccludedActors();
+
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle();
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -150,8 +160,12 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 
-public:
-	UFUNCTION(BlueprintCallable)
-	void SyncOccludedActors();
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle> MagicCircleClass;
+
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;
+
+	void UpdateMagicCircleLocation();
 	
 };
