@@ -13,6 +13,7 @@
 #include "Actor/MagicCircle.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -36,11 +37,16 @@ void AASPlayerController::PlayerTick(float DeltaTime)
 	UpdateMagicCircleLocation();
 }
 
-void AASPlayerController::ShowMagicCircle()
+void AASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
-	if (!MagicCircle)
+	if (!IsValid(MagicCircle))
 	{
-		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);	
+		FVector MagicCircleLocation = CursorHit.ImpactPoint;
+		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, MagicCircleLocation, FRotator::ZeroRotator);
+		if (DecalMaterial)
+		{
+			MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
+		}
 	}
 }
 

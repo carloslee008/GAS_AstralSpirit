@@ -14,12 +14,15 @@ class ASTRALSPIRIT_API AMagicCircle : public AActor
 public:	
 	AMagicCircle();
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UDecalComponent> MagicCircleDecal;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UDecalComponent> MagicCircleDecal;
+	
 
 
 

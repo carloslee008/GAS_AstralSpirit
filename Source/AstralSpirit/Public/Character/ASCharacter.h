@@ -34,7 +34,8 @@ public:
 	virtual void AddToSkillPoints_Implementation(int32 InSkillPoints) override;
 	virtual int32 GetAttributePoints_Implementation() const override;
 	virtual int32 GetSkillPoints_Implementation() const override;
-	
+	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
+	virtual void HideMagicCircle_Implementation() override;
 	/** End Player Interface */
 
 	/** Begin Combat Interface */

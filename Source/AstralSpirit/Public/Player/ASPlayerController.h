@@ -56,7 +56,7 @@ public:
 	void SyncOccludedActors();
 
 	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle();
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);
 
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();
@@ -93,6 +93,7 @@ protected:
 	
 private:
 	/* Camera Occlusion Begin */
+	UPROPERTY()
 	TMap<const AActor*, FCameraOccludedActor> OccludedActors;
 
 	bool HideOccludedActor(const AActor* Actor);

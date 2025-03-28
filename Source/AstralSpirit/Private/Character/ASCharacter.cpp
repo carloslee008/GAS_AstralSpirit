@@ -127,6 +127,22 @@ int32 AASCharacter::GetSkillPoints_Implementation() const
 	return ASPlayerState->GetPlayerSkillPoints();
 }
 
+void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+{
+	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
+	{
+		ASPlayerController->ShowMagicCircle(DecalMaterial);
+	}
+}
+
+void AASCharacter::HideMagicCircle_Implementation()
+{
+	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
+	{
+		ASPlayerController->HideMagicCircle();
+	}	
+}
+
 void AASCharacter::AddToXP_Implementation(int32 InXP)
 {
 	AASPlayerState* ASPlayerState = GetPlayerState<AASPlayerState>();
