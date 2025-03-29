@@ -88,6 +88,7 @@ public:
 	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag Abilities_Lightning_LightningBolt;
 	FGameplayTag Abilities_Lightning_Electrocute;
+	FGameplayTag Abilities_Cold_IceShards;
 	
 	FGameplayTag Abilities_Passive_AstralProtection;
 	FGameplayTag Abilities_Passive_LifeSiphon;
@@ -96,8 +97,7 @@ public:
 	FGameplayTag Cooldown_Fire_FireBolt;
 	FGameplayTag Cooldown_Lightning_LightningBolt;
 	FGameplayTag Cooldown_Lightning_Electrocute;
-
-	
+	FGameplayTag Cooldown_Cold_IceShards;
 	
 	FGameplayTag CombatSocket_Weapon;
 	FGameplayTag CombatSocket_RightHand;
