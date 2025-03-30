@@ -132,6 +132,7 @@ void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMater
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
 	{
 		ASPlayerController->ShowMagicCircle(DecalMaterial);
+		ASPlayerController->bShowMouseCursor = false;
 	}
 }
 
@@ -140,6 +141,7 @@ void AASCharacter::HideMagicCircle_Implementation()
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
 	{
 		ASPlayerController->HideMagicCircle();
+		ASPlayerController->bShowMouseCursor = true;
 	}	
 }
 
