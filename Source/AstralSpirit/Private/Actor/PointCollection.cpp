@@ -4,6 +4,7 @@
 #include "Actor/PointCollection.h"
 
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APointCollection::APointCollection()
@@ -53,16 +54,16 @@ APointCollection::APointCollection()
 
 }
 
-TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& GroundLocation, int32 NumPoints,
-	float YawOverride)
+TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& GroundLocation, int32 NumPoints, float YawOverride)
 {
 	checkf(ImmutablePts.Num() >= NumPoints, TEXT("Attempted to access ImmutablePts out of bounds."));
 
 	TArray<USceneComponent*> ArrayCopy;
 	for (USceneComponent* Pt : ImmutablePts)
 	{
-		if (ArrayCopy.Num() > NumPoints) return ArrayCopy;
+		if (ArrayCopy.Num() >= NumPoints) return ArrayCopy;
 
+		// Rotate points that are not point zero
 		if (Pt != Pt_0)
 		{
 			FVector ToPoint = Pt->GetComponentLocation() - Pt_0->GetComponentLocation();
@@ -80,7 +81,14 @@ TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& Ground
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActors(IgnoreActors);
 		GetWorld()->LineTraceSingleByProfile(HitResult, RaisedLocation, LoweredLocation, FName("BlockAll"), QueryParams);
+
+		const FVector AdjustedLocation = FVector(Pt->GetComponentLocation().X, Pt->GetComponentLocation().Y, HitResult.ImpactPoint.Z);
+		Pt->SetWorldLocation(AdjustedLocation);
+		Pt->SetWorldRotation(UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactNormal));
+
+		ArrayCopy.Add(Pt);
 	}
+	return ArrayCopy;
 }
 
 // Called when the game starts or when spawned
