@@ -25,6 +25,8 @@ class ASTRALSPIRIT_API AASCharacterBase : public ACharacter, public IAbilitySyst
 public:
 	AASCharacterBase();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
@@ -44,12 +46,15 @@ public:
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
+	virtual FOnDamageSignature& GetOnDamageSignature() override;
 	/** End Combat Interface */
 
 	FOnASCRegistered OnAscRegistered;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathSignature OnDeathDelegate;
+
+	FOnDamageSignature OnDamageDelegate;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
