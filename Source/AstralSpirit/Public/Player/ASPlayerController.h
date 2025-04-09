@@ -56,7 +56,7 @@ public:
 	void SyncOccludedActors();
 
 	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr, float Radius = 0.f);
 
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();
@@ -166,7 +166,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AMagicCircle> MagicCircle;
-
+	
 	void UpdateMagicCircleLocation();
 	
 };

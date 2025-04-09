@@ -127,11 +127,11 @@ int32 AASCharacter::GetSkillPoints_Implementation() const
 	return ASPlayerState->GetPlayerSkillPoints();
 }
 
-void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial, float Radius)
 {
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
 	{
-		ASPlayerController->ShowMagicCircle(DecalMaterial);
+		ASPlayerController->ShowMagicCircle(DecalMaterial, Radius);
 		ASPlayerController->bShowMouseCursor = false;
 	}
 }

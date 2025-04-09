@@ -11,6 +11,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "Actor/MagicCircle.h"
+#include "AstralSpirit/AstralSpirit.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/DecalComponent.h"
@@ -37,16 +38,19 @@ void AASPlayerController::PlayerTick(float DeltaTime)
 	UpdateMagicCircleLocation();
 }
 
-void AASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
+void AASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial, float Radius)
 {
 	if (!IsValid(MagicCircle))
 	{
+		// bShowMouseCursor = false;
+		
 		FVector MagicCircleLocation = CursorHit.ImpactPoint;
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, MagicCircleLocation, FRotator::ZeroRotator);
 		if (DecalMaterial)
 		{
 			MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
 		}
+		MagicCircle->SetTargetingRadius(Radius);
 	}
 }
 
@@ -54,6 +58,7 @@ void AASPlayerController::HideMagicCircle()
 {
 	if (IsValid(MagicCircle))
 	{
+		// bShowMouseCursor = true;
 		MagicCircle->Destroy();
 	}
 }
@@ -97,6 +102,7 @@ void AASPlayerController::AutoRun()
 	}
 }
 
+
 void AASPlayerController::UpdateMagicCircleLocation()
 {
 	if (IsValid(MagicCircle))
@@ -115,7 +121,10 @@ void AASPlayerController::CursorTrace()
 		ThisActor = nullptr;
 		return;
 	}
-	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	// Ignore characters when casting magic circle
+	const ECollisionChannel TraceChannel = IsValid(MagicCircle) ? ECC_ExcludeCharacters : ECC_Visibility;
+	
+	GetHitResultUnderCursor(TraceChannel, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = ThisActor;
 	ThisActor = CursorHit.GetActor();
