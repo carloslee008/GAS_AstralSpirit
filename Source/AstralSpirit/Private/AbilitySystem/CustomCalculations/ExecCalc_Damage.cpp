@@ -98,6 +98,30 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 	}
 }
 
+float UExecCalc_Damage::CalculatedRadialDamage(const FGameplayEffectContextHandle& EffectContextHandle,
+                                               const float Damage, const AActor* TargetAvatar) const
+{
+	FVector TargetLocation = TargetAvatar->GetActorLocation();
+	const FVector Origin = UASAbilitySystemBlueprintLibrary::GetRadialDamageOrigin(EffectContextHandle);
+	TargetLocation.Z = Origin.Z; // TargetAvatar half-height may be above the InnerRadius
+
+	const float SquareDistance = FVector::DistSquared(TargetLocation, Origin);
+	const float InnerRadius = UASAbilitySystemBlueprintLibrary::GetRadialDamageInnerRadius(EffectContextHandle);
+	const float SquareInnerRadius = FMath::Square(InnerRadius);
+
+	const float OuterRadius = UASAbilitySystemBlueprintLibrary::GetRadialDamageOuterRadius(EffectContextHandle);
+	const float SquareOuterRadius = FMath::Square(OuterRadius);
+
+	if (SquareDistance <= SquareInnerRadius) return Damage;
+
+	const TRange<float> DistanceRange(SquareInnerRadius, SquareOuterRadius);
+	const TRange<float> DamageScaleRange(1.0f, 0.f);
+	const float DamageScale = FMath::GetMappedRangeValueClamped(DistanceRange, DamageScaleRange, SquareDistance);
+	const float RadialDamage = Damage * DamageScale;
+
+	return RadialDamage;
+}
+
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
@@ -158,25 +182,26 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		if (UASAbilitySystemBlueprintLibrary::IsRadialDamage(EffectContextHandle))
 		{
-			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetAvatar))
-			{
-				CombatInterface->GetOnDamageSignature().AddLambda([&](float DamageAmount)
-				 {
-					 DamageTypeValue = DamageAmount;
-				 });
-			}
-			UGameplayStatics::ApplyRadialDamageWithFalloff(
-				TargetAvatar,
-				DamageTypeValue,
-				0.f,
-				UASAbilitySystemBlueprintLibrary::GetRadialDamageOrigin(EffectContextHandle),
-				UASAbilitySystemBlueprintLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
-				UASAbilitySystemBlueprintLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
-				1.f,
-				UDamageType::StaticClass(),
-				TArray<AActor*>(),
-				SourceAvatar,
-				nullptr);
+			DamageTypeValue = CalculatedRadialDamage(EffectContextHandle, DamageTypeValue, TargetAvatar);
+			// if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetAvatar))
+			// {
+			// 	CombatInterface->GetOnDamageSignature().AddLambda([&](float DamageAmount)
+			// 	 {
+			// 		 DamageTypeValue = DamageAmount;
+			// 	 });
+			// }
+			// UGameplayStatics::ApplyRadialDamageWithFalloff(
+			// 	TargetAvatar,
+			// 	DamageTypeValue,
+			// 	0.f,
+			// 	UASAbilitySystemBlueprintLibrary::GetRadialDamageOrigin(EffectContextHandle),
+			// 	UASAbilitySystemBlueprintLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
+			// 	UASAbilitySystemBlueprintLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
+			// 	1.f,
+			// 	UDamageType::StaticClass(),
+			// 	TArray<AActor*>(),
+			// 	SourceAvatar,
+			// 	nullptr);
 		}	
 		
 		// Get Damage Set by Caller Magnitude
