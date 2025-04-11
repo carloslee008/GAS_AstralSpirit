@@ -127,7 +127,7 @@ int32 AASCharacter::GetSkillPoints_Implementation() const
 	return ASPlayerState->GetPlayerSkillPoints();
 }
 
-void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial, float Radius)
+void AASCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial, const float Radius)
 {
 	if (AASPlayerController* ASPlayerController = Cast<AASPlayerController>(GetController()))
 	{

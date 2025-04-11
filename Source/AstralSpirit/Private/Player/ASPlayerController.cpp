@@ -40,10 +40,8 @@ void AASPlayerController::PlayerTick(float DeltaTime)
 
 void AASPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial, float Radius)
 {
-	if (!IsValid(MagicCircle))
+	if (!IsValid(MagicCircle) && IsLocalController())
 	{
-		// bShowMouseCursor = false;
-		
 		FVector MagicCircleLocation = CursorHit.ImpactPoint;
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, MagicCircleLocation, FRotator::ZeroRotator);
 		if (DecalMaterial)
@@ -58,7 +56,6 @@ void AASPlayerController::HideMagicCircle()
 {
 	if (IsValid(MagicCircle))
 	{
-		// bShowMouseCursor = true;
 		MagicCircle->Destroy();
 	}
 }
