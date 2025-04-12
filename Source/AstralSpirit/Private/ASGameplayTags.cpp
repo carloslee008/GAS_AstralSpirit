@@ -267,6 +267,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Cold.IceShards"),
 		FString("Ice Shards Ability Tag"));
 
+	GameplayTags.Abilities_Fire_WaveOfFire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.WaveOfFire"),
+		FString("Wave of Fire Ability Tag"));
+
 	/*
 	 * Passive Abilities
 	 */
@@ -338,6 +342,10 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Cooldown_Cold_IceShards = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Cold.IceShards"),
 		FString("Ice Shards Cooldown Tag"));
+
+	GameplayTags.Cooldown_Fire_WaveOfFire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.WaveOfFire"),
+		FString("Wave of Fire Cooldown Tag"));
 
 	/*
 	 * Combat Sockets
