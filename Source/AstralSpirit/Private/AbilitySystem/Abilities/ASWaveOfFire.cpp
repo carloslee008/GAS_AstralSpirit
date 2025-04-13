@@ -58,3 +58,8 @@ FString UASWaveOfFire::GetNextLevelDescription(int32 Level)
 			NumFireBalls,
 			ScaledDamage);
 }
+
+TArray<AASFireWave*> UASWaveOfFire::SpawnFireWaves()
+{
+	return TArray<AASFireWave*>();
+}

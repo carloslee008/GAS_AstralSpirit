@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/ASDamageGameplayAbility.h"
 #include "ASWaveOfFire.generated.h"
 
+class AASFireWave;
 /**
  * 
  */
@@ -17,9 +18,17 @@ public:
 	virtual FString GetDescription(int32 Level) override;
 	virtual FString GetNextLevelDescription(int32 Level) override;
 
+	UFUNCTION(BlueprintCallable)
+	TArray<AASFireWave*> SpawnFireWaves();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="FireBlast")
 	int32 NumFireBalls = 10;
+
+private:
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AASFireWave> FireWaveClass;
 	
 };
