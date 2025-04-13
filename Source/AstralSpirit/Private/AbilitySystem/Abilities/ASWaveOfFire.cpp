@@ -3,6 +3,9 @@
 
 #include "AbilitySystem/Abilities/ASWaveOfFire.h"
 
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
+#include "Actor/ASFireWave.h"
+
 FString UASWaveOfFire::GetDescription(int32 Level)
 {
 	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);;
@@ -61,5 +64,33 @@ FString UASWaveOfFire::GetNextLevelDescription(int32 Level)
 
 TArray<AASFireWave*> UASWaveOfFire::SpawnFireWaves()
 {
-	return TArray<AASFireWave*>();
+	TArray<AASFireWave*> FireWaves;
+	// Direction Actor is facing
+	const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+	// Actor Location
+	const FVector Location = GetAvatarActorFromActorInfo()->GetActorLocation();
+	TArray<FRotator> Rotators = UASAbilitySystemBlueprintLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, 360.f, NumFireBalls);
+
+	// Spawn Wave of Fires
+	for (const FRotator& Rotator : Rotators)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(Location); // Spawn location
+		SpawnTransform.SetRotation(Rotator.Quaternion()); // Spawn Rotation
+		
+		AASFireWave* FireWave = GetWorld()->SpawnActorDeferred<AASFireWave>(
+			FireWaveClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			CurrentActorInfo->PlayerController->GetPawn(),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		FireWave->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+
+		FireWaves.Add(FireWave);
+
+		FireWave->FinishSpawning(SpawnTransform);
+	}
+	
+	return FireWaves;
 }

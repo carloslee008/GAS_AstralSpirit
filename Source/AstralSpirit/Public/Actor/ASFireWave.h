@@ -14,7 +14,6 @@ class ASTRALSPIRIT_API AASFireWave : public AASProjectile
 {
 	GENERATED_BODY()
 public:
-	AASFireWave();
 
 protected:
 	virtual void BeginPlay() override;

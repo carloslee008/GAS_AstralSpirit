@@ -3,14 +3,6 @@
 
 #include "Actor/ASFireWave.h"
 
-#include "GameFramework/ProjectileMovementComponent.h"
-
-AASFireWave::AASFireWave()
-{
-	ProjectileMovement->PrimaryComponentTick.bCanEverTick = false;
-	ProjectileMovement->SetAutoActivate(false);
-}
-
 void AASFireWave::BeginPlay()
 {
 	Super::BeginPlay();
