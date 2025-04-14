@@ -72,10 +72,7 @@ void AASProjectile::Destroyed()
 void AASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return;
-	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
-	if (SourceAvatarActor == OtherActor) return;
-	if (UASAbilitySystemBlueprintLibrary::IsSameTeam(SourceAvatarActor, OtherActor)) return;
+	if (!IsValidOverlap(OtherActor)) return;
 	if (!bHit) OnHit();
 
 	// Server handles Destroy() actor which is replicated to Client
@@ -103,4 +100,14 @@ void AASProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	}
 	// In rare case the Server calls Destroy() BEFORE client gets chance to call OnSphereOverlap to play sound / effect
 	else bHit = true;
+}
+
+bool AASProjectile::IsValidOverlap(AActor* OtherActor) const
+{
+	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return false;
+	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	if (SourceAvatarActor == OtherActor) return false;
+	if (UASAbilitySystemBlueprintLibrary::IsSameTeam(SourceAvatarActor, OtherActor)) return false;
+
+	return true;
 }
