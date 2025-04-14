@@ -64,6 +64,9 @@ FString UASWaveOfFire::GetNextLevelDescription(int32 Level)
 
 TArray<AASFireWave*> UASWaveOfFire::SpawnFireWaves()
 {
+	// Only Server should execute
+	if (const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority(); !bIsServer) return TArray<AASFireWave*>();
+	
 	TArray<AASFireWave*> FireWaves;
 	// Direction Actor is facing
 	const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();

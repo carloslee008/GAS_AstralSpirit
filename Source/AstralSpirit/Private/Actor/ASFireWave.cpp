@@ -6,6 +6,7 @@
 void AASFireWave::BeginPlay()
 {
 	Super::BeginPlay();
+	StartOutgoingTimeline();
 }
 
 void AASFireWave::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
