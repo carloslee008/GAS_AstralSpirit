@@ -84,11 +84,12 @@ TArray<AASFireWave*> UASWaveOfFire::SpawnFireWaves()
 		AASFireWave* FireWave = GetWorld()->SpawnActorDeferred<AASFireWave>(
 			FireWaveClass,
 			SpawnTransform,
-			GetOwningActorFromActorInfo(),
+			GetAvatarActorFromActorInfo(),
 			CurrentActorInfo->PlayerController->GetPawn(),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		FireWave->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		FireWave->ExplosionDamageParams = MakeDamageEffectParamsFromClassDefaults();
 
 		FireWaves.Add(FireWave);
 
