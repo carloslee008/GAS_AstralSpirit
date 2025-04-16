@@ -4,7 +4,10 @@
 #include "Actor/ASFireWave.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ASGameplayTags.h"
+#include "GameplayCueManager.h"
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
+#include "Components/AudioComponent.h"
 
 void AASFireWave::BeginPlay()
 {
@@ -33,6 +36,23 @@ void AASFireWave::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 			IgnoreList.Add(OtherActor);
 		}
 	}
+}
+
+void AASFireWave::OnHit()
+{
+	if (GetOwner())
+	{
+		FGameplayCueParameters CueParams;
+		CueParams.Location = GetActorLocation();
+		// Execute GameplayCue locally
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetOwner(), FASGameplayTags::Get().GameplayCue_WaveOfFire, CueParams);
+	}
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+	bHit = true;
 }
 
 void AASFireWave::EmptyIgnoreList()

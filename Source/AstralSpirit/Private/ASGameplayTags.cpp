@@ -410,4 +410,14 @@ void FASGameplayTags::InitializeNativeGameplayTags()
 		FName("Player.Attack.InputReleased"),
 		FString("Block Input Released callback for input")
 		);
+
+	/*
+	 * GameplayCues
+	 */
+	
+	GameplayTags.GameplayCue_WaveOfFire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.WaveOfFire"),
+		FString("Wave of Fire GameplayCue tag")
+		);
+	
 }

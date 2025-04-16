@@ -201,12 +201,12 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				// Checks to see there's at least one path point in the array
 				CachedDestination = NavPath->PathPoints.IsEmpty() ? ControlledPawn->GetActorLocation() : NavPath->PathPoints.Last(); 
 				bAutoRunning = true;
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 			}
 			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputReleased))
 			{
 				return;
 			}
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 		}
 		FollowTime = 0.f;
 		bIsTargeting = false;
