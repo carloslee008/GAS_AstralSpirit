@@ -11,17 +11,20 @@ void UMVVM_LoadMenu::InitializeLoadSlots()
 {
 	// Create and initialize LoadSlot_0
 	LoadSlot_0 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
-	LoadSlot_0->LoadSlotName = FString("LoadSlot_0");
+	LoadSlot_0->SetLoadSlotName(FString("LoadSlot_0"));
+	LoadSlot_0->SlotIndex = 0;
 	LoadSlots.Add(0, LoadSlot_0);
 	
 	// Create and initialize LoadSlot_1
 	LoadSlot_1 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
-	LoadSlot_1->LoadSlotName = FString("LoadSlot_1");
+	LoadSlot_1->SetLoadSlotName(FString("LoadSlot_1"));
+	LoadSlot_1->SlotIndex = 1;
 	LoadSlots.Add(1, LoadSlot_1);
 	
 	// Create and initialize LoadSlot_2
 	LoadSlot_2 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
-	LoadSlot_1->LoadSlotName = FString("LoadSlot_2");
+	LoadSlot_2->SetLoadSlotName(FString("LoadSlot_2"));
+	LoadSlot_2->SlotIndex = 2;
 	LoadSlots.Add(2, LoadSlot_2);
 }
 
@@ -39,7 +42,7 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
 
 	// Set the entered player name on the selected slot
-	LoadSlots[Slot]->PlayerName = EnteredName;
+	LoadSlots[Slot]->SetPlayerName(EnteredName);
 
 	// Save the slot data using the game mode's method
 	ASGameMode->SaveSlotData(LoadSlots[Slot], Slot);
