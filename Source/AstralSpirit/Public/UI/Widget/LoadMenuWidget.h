@@ -13,5 +13,8 @@ UCLASS()
 class ASTRALSPIRIT_API ULoadMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BlueprintInitializeWidget();
 };
