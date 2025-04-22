@@ -39,3 +39,11 @@ ULoadMenuSaveGame* AASGameModeBase::GetSaveSlotData(const FString& SlotName, int
 	ULoadMenuSaveGame* LoadMenuSaveGame = Cast<ULoadMenuSaveGame>(SaveGameObject);
 	return LoadMenuSaveGame;
 }
+
+void AASGameModeBase::DeleteSlot(const FString& SlotName, int32 SlotIndex)
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
+	{
+		UGameplayStatics::DeleteGameInSlot(SlotName, SlotIndex);
+	}
+}
