@@ -6,6 +6,9 @@
 #include "MVVMViewModelBase.h"
 #include "MVVM_LoadMenu.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSlotSelected);
+
+
 class UMVVM_LoadSlot;
 /**
  * 
@@ -16,6 +19,10 @@ class ASTRALSPIRIT_API UMVVM_LoadMenu : public UMVVMViewModelBase
 	GENERATED_BODY()
 public:
 	void InitializeLoadSlots();
+
+	UPROPERTY(BlueprintAssignable)
+	FSlotSelected SlotSelected;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMVVM_LoadSlot> LoadSlotViewModelClass;
 
@@ -33,6 +40,9 @@ public:
 
 	void LoadData();
 
+	void SetNumLoadSlots(int32 InNumLoadSlots);
+	int32 GetNumLoadSlots() const { return NumLoadSlots; }
+
 private:
 
 	UPROPERTY()
@@ -46,5 +56,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMVVM_LoadSlot> LoadSlot_2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta=(AllowPrivateAccess="true"))
+	int32 NumLoadSlots;
 	
 };

@@ -26,6 +26,8 @@ void UMVVM_LoadMenu::InitializeLoadSlots()
 	LoadSlot_2->SetLoadSlotName(FString("LoadSlot_2"));
 	LoadSlot_2->SlotIndex = 2;
 	LoadSlots.Add(2, LoadSlot_2);
+
+	SetNumLoadSlots(LoadSlots.Num());
 }
 
 // Returns a pointer to the load slot view model at the given index.
@@ -58,6 +60,7 @@ void UMVVM_LoadMenu::NewGameButtonPressed(int32 Slot)
 
 void UMVVM_LoadMenu::SelectSlotButtonPressed(int32 Slot)
 {
+	SlotSelected.Broadcast();
 	for (const TTuple<int32, UMVVM_LoadSlot*> LoadSlot : LoadSlots)
 	{
 		if (LoadSlot.Key == Slot)
@@ -85,4 +88,9 @@ void UMVVM_LoadMenu::LoadData()
 		LoadSlot.Value->SetPlayerName(PlayerName);
 		LoadSlot.Value->InitializeSlot();
 	}
+}
+
+void UMVVM_LoadMenu::SetNumLoadSlots(int32 InNumLoadSlots)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(NumLoadSlots, InNumLoadSlots);
 }
