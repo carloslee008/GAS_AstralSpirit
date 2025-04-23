@@ -3,6 +3,7 @@
 
 #include "UI/ViewModel/MVVM_LoadMenu.h"
 
+#include "Game/ASGameInstance.h"
 #include "Game/ASGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/ViewModel/MVVM_LoadSlot.h"
@@ -55,6 +56,11 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 	// Save the slot data using the game mode's method
 	ASGameMode->SaveSlotData(LoadSlots[Slot], Slot);
 	LoadSlots[Slot]->InitializeSlot();
+
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(ASGameMode->GetGameInstance());
+	ASGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
+	ASGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
+	ASGameInstance->PlayerStartTag = ASGameMode->DefaultPlayerStartTag;
 }
 
 void UMVVM_LoadMenu::NewGameButtonPressed(int32 Slot)

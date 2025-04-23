@@ -3,6 +3,7 @@
 
 #include "Game/ASGameModeBase.h"
 
+#include "Game/ASGameInstance.h"
 #include "Game/LoadMenuSaveGame.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -61,6 +62,7 @@ void AASGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 
 AActor* AASGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(GetGameInstance());
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), Actors);
 	if (Actors.Num() > 0)
@@ -70,7 +72,7 @@ AActor* AASGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		{
 			if (APlayerStart* PlayerStart = Cast<APlayerStart>(Actor))
 			{
-				if (PlayerStart->PlayerStartTag == FName("StartTag"))
+				if (PlayerStart->PlayerStartTag == ASGameInstance->PlayerStartTag)
 				{
 					SelectedActor = PlayerStart;
 					break;
