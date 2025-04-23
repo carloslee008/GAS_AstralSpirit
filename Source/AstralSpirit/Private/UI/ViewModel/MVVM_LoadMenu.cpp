@@ -45,7 +45,9 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 
 	// Set the entered player name on the selected slot
 	LoadSlots[Slot]->SetPlayerName(EnteredName);
-
+	// Set the default map name on the selected slot
+	LoadSlots[Slot]->SetMapName(ASGameMode->DefaultMapName);
+	// Set slot status to taken
 	LoadSlots[Slot]->SlotStatus = Taken;
 
 	// Save the slot data using the game mode's method
