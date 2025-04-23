@@ -9,7 +9,7 @@
 
 void AASGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 {
-	// Overrride slot if game already exists
+	// Override slot if game already exists
 	if (UGameplayStatics::DoesSaveGameExist(LoadSlot->GetLoadSlotName(), SlotIndex))
 	{
 		UGameplayStatics::DeleteGameInSlot(LoadSlot->GetLoadSlotName(), SlotIndex);
@@ -19,6 +19,9 @@ void AASGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	ULoadMenuSaveGame* LoadMenuSaveGame = Cast<ULoadMenuSaveGame>(SaveGameObject);
 	// Set Player name
 	LoadMenuSaveGame->PlayerName = LoadSlot->GetPlayerName();
+	// Set Map Name
+	LoadMenuSaveGame->MapName = LoadSlot->GetMapName();
+	// Set Slot Status
 	LoadMenuSaveGame->SaveSlotStatus = Taken;
 
 	UGameplayStatics::SaveGameToSlot(LoadMenuSaveGame, LoadSlot->GetLoadSlotName(), SlotIndex);

@@ -43,10 +43,12 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 	// Get reference to the current game mode
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
 
-	// Set the entered player name on the selected slot
-	LoadSlots[Slot]->SetPlayerName(EnteredName);
 	// Set the default map name on the selected slot
 	LoadSlots[Slot]->SetMapName(ASGameMode->DefaultMapName);
+
+	// Set the entered player name on the selected slot
+	LoadSlots[Slot]->SetPlayerName(EnteredName);
+	
 	// Set slot status to taken
 	LoadSlots[Slot]->SlotStatus = Taken;
 
@@ -101,6 +103,7 @@ void UMVVM_LoadMenu::LoadData()
 		LoadSlot.Value->SlotStatus = SaveSlotStatus;
 		LoadSlot.Value->SetPlayerName(PlayerName);
 		LoadSlot.Value->InitializeSlot();
+		LoadSlot.Value->SetMapName(SaveObject->MapName);
 	}
 }
 
