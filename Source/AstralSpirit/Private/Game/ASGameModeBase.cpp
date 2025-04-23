@@ -51,6 +51,13 @@ void AASGameModeBase::DeleteSlot(const FString& SlotName, int32 SlotIndex)
 	}
 }
 
+void AASGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
+{
+	FString SlotName = Slot->GetLoadSlotName();
+	int32 SlotIndex = Slot->SlotIndex;
+	UGameplayStatics::OpenLevelBySoftObjectPtr(Slot, Maps.FindChecked(Slot->GetMapName()));
+}
+
 void AASGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();

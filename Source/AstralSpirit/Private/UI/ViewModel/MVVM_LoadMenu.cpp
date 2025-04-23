@@ -90,6 +90,16 @@ void UMVVM_LoadMenu::DeleteButtonPressed()
 	}
 }
 
+void UMVVM_LoadMenu::PlayButtonPressed()
+{
+	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+
+	if (IsValid(SelectedSlot))
+	{
+		ASGameMode->TravelToMap(SelectedSlot);
+	}
+}
+
 void UMVVM_LoadMenu::LoadData()
 {
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
