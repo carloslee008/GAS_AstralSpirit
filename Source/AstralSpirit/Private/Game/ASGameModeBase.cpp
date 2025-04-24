@@ -25,6 +25,8 @@ void AASGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	LoadMenuSaveGame->MapName = LoadSlot->GetMapName();
 	// Set Slot Status
 	LoadMenuSaveGame->SaveSlotStatus = Taken;
+	// Set Player Start Location
+	LoadMenuSaveGame->PlayerStartTag = LoadSlot->PlayerStartTag;
 
 	UGameplayStatics::SaveGameToSlot(LoadMenuSaveGame, LoadSlot->GetLoadSlotName(), SlotIndex);
 	

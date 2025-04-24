@@ -36,5 +36,8 @@ public:
 	FString MapName = FString("Default Map Name");
 
 	UPROPERTY()
+	FName PlayerStartTag; // Note: FNames cannot contain spaces
+
+	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = Vacant;
 };

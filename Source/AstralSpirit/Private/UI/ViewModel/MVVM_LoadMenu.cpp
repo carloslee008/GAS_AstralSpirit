@@ -53,6 +53,8 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 	// Set slot status to taken
 	LoadSlots[Slot]->SlotStatus = Taken;
 
+	LoadSlots[Slot]->PlayerStartTag = ASGameMode->DefaultPlayerStartTag;
+
 	// Save the slot data using the game mode's method
 	ASGameMode->SaveSlotData(LoadSlots[Slot], Slot);
 	LoadSlots[Slot]->InitializeSlot();
@@ -99,6 +101,8 @@ void UMVVM_LoadMenu::DeleteButtonPressed()
 void UMVVM_LoadMenu::PlayButtonPressed()
 {
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(ASGameMode->GetGameInstance());
+	ASGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
 
 	if (IsValid(SelectedSlot))
 	{
@@ -120,6 +124,7 @@ void UMVVM_LoadMenu::LoadData()
 		LoadSlot.Value->SetPlayerName(PlayerName);
 		LoadSlot.Value->InitializeSlot();
 		LoadSlot.Value->SetMapName(SaveObject->MapName);
+		LoadSlot.Value->PlayerStartTag = SaveObject->PlayerStartTag;
 	}
 }
 
