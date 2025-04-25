@@ -36,6 +36,7 @@ public:
 	virtual int32 GetSkillPoints_Implementation() const override;
 	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial, float Radius) override;
 	virtual void HideMagicCircle_Implementation() override;
+	virtual void SaveProgress_Implementation(const FName& CheckpointTag) override;
 	/** End Player Interface */
 
 	/** Begin Combat Interface */

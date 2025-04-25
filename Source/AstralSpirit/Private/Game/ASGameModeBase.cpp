@@ -55,6 +55,28 @@ void AASGameModeBase::DeleteSlot(const FString& SlotName, int32 SlotIndex)
 	}
 }
 
+ULoadMenuSaveGame* AASGameModeBase::RetrieveInGameSaveData()
+{
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(GetGameInstance());
+
+	const FString InGameLoadSlotName = ASGameInstance->LoadSlotName;
+	const int32 InGameLoadSlotIndex = ASGameInstance->LoadSlotIndex;
+
+	return GetSaveSlotData(InGameLoadSlotName, InGameLoadSlotIndex);
+	
+}
+
+void AASGameModeBase::SaveInGameProgressData(ULoadMenuSaveGame* SaveObject)
+{
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(GetGameInstance());
+
+	const FString InGameLoadSlotName = ASGameInstance->LoadSlotName;
+	const int32 InGameLoadSlotIndex = ASGameInstance->LoadSlotIndex;
+	ASGameInstance->PlayerStartTag = SaveObject->PlayerStartTag;
+
+	UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameLoadSlotIndex);
+}
+
 void AASGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 {
 	FString SlotName = Slot->GetLoadSlotName();

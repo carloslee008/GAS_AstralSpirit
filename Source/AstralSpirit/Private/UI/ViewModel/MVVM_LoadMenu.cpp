@@ -57,12 +57,13 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 
 	// Save the slot data using the game mode's method
 	ASGameMode->SaveSlotData(LoadSlots[Slot], Slot);
+	
 	LoadSlots[Slot]->InitializeSlot();
 
-	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(ASGameMode->GetGameInstance());
-	ASGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
-	ASGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
-	ASGameInstance->PlayerStartTag = ASGameMode->DefaultPlayerStartTag;
+	// UASGameInstance* ASGameInstance = Cast<UASGameInstance>(ASGameMode->GetGameInstance());
+	// ASGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
+	// ASGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
+	// ASGameInstance->PlayerStartTag = ASGameMode->DefaultPlayerStartTag;
 }
 
 void UMVVM_LoadMenu::NewGameButtonPressed(int32 Slot)
@@ -103,6 +104,8 @@ void UMVVM_LoadMenu::PlayButtonPressed()
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
 	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(ASGameMode->GetGameInstance());
 	ASGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
+	ASGameInstance->LoadSlotName = SelectedSlot->GetLoadSlotName();
+	ASGameInstance->LoadSlotIndex = SelectedSlot->SlotIndex;
 
 	if (IsValid(SelectedSlot))
 	{

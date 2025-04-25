@@ -13,7 +13,10 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Game/ASGameModeBase.h"
+#include "Game/LoadMenuSaveGame.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HUD/ASHUD.h"
 
 AASCharacter::AASCharacter()
@@ -143,6 +146,20 @@ void AASCharacter::HideMagicCircle_Implementation()
 		ASPlayerController->HideMagicCircle();
 		ASPlayerController->bShowMouseCursor = true;
 	}	
+}
+
+void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
+{
+	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (ASGameMode)
+	{
+		ULoadMenuSaveGame* SaveData = ASGameMode->RetrieveInGameSaveData();
+		if (SaveData == nullptr) return;
+
+		SaveData->PlayerStartTag = CheckpointTag;
+
+		ASGameMode->SaveInGameProgressData(SaveData);
+	}
 }
 
 void AASCharacter::AddToXP_Implementation(int32 InXP)

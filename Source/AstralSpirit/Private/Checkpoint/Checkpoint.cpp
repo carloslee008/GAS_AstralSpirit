@@ -4,6 +4,7 @@
 #include "Checkpoint/Checkpoint.h"
 
 #include "Components/SphereComponent.h"
+#include "Interaction/PlayerInterface.h"
 
 ACheckpoint::ACheckpoint(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -34,8 +35,9 @@ void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if (OtherActor->ActorHasTag(FName("Player")))
+	if (OtherActor->Implements<UPlayerInterface>())
 	{
+		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		Glow();
 	}
 }
