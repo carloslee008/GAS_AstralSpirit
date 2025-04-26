@@ -52,7 +52,39 @@ void AASCharacter::PossessedBy(AController* NewController)
 
 	// Init ability actor info for the Server
 	InitAbilityActorInfo();
+	LoadProgress();
+
+	// TODO: Load in abilities from disk
 	AddCharacterAbilities();
+}
+
+void AASCharacter::LoadProgress()
+{
+	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (ASGameMode)
+	{
+		ULoadMenuSaveGame* SaveData = ASGameMode->RetrieveInGameSaveData();
+		if (SaveData == nullptr) return;
+
+		/* Set Player Info upon loading */
+		if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
+		{
+			ASPlayerState->SetLevel(SaveData->PlayerLevel);
+			ASPlayerState->SetXP(SaveData->XP);
+			ASPlayerState->SetAttributePoints(SaveData->AttributePoints);
+			ASPlayerState->SetSkillPoints(SaveData->SkillPoints);
+		}
+		
+		if (SaveData->bFirstTimeLoadIn)
+		{
+			InitializeDefaultAttributes();
+			AddCharacterAbilities();
+		}
+		else
+		{
+			
+		}
+	}
 }
 
 void AASCharacter::OnRep_PlayerState()
@@ -159,6 +191,8 @@ void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 
 		SaveData->PlayerStartTag = CheckpointTag;
 
+		/* Save Player Info upon loading */
+		
 		if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
 		{
 			SaveData->PlayerLevel = ASPlayerState->GetPlayerLevel();
@@ -171,6 +205,7 @@ void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 		SaveData->Dexterity = UASAttributeSet::GetDexterityAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Intelligence = UASAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 
+		SaveData->bFirstTimeLoadIn = false;
 		ASGameMode->SaveInGameProgressData(SaveData);
 	}
 }

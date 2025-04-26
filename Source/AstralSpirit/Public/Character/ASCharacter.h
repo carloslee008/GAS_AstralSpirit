@@ -50,6 +50,8 @@ public:
 
 	virtual void OnRep_Stunned() override;
 	virtual void OnRep_Ignited() override;
+
+	void LoadProgress();
 	
 private:
 
