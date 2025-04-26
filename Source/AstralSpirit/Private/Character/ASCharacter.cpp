@@ -11,6 +11,7 @@
 #include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/ASAttributeSet.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Game/ASGameModeBase.h"
@@ -157,6 +158,18 @@ void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 		if (SaveData == nullptr) return;
 
 		SaveData->PlayerStartTag = CheckpointTag;
+
+		if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
+		{
+			SaveData->PlayerLevel = ASPlayerState->GetPlayerLevel();
+			SaveData->XP = ASPlayerState->GetPlayerXP();
+			SaveData->AttributePoints = ASPlayerState->GetPlayerAttributePoints();
+			SaveData->SkillPoints = ASPlayerState->GetPlayerSkillPoints();
+		}
+		
+		SaveData->Strength = UASAttributeSet::GetStrengthAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Dexterity = UASAttributeSet::GetDexterityAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Intelligence = UASAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 
 		ASGameMode->SaveInGameProgressData(SaveData);
 	}
