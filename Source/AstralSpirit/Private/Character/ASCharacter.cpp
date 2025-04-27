@@ -13,6 +13,7 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAttributeSet.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Game/ASGameModeBase.h"
@@ -204,6 +205,34 @@ void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 		SaveData->Intelligence = UASAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 
 		SaveData->bFirstTimeLoadIn = false;
+
+		if (!HasAuthority()) return;
+
+		UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent);
+		FForEachAbility SaveAbilityDelegate;
+		SaveData->SavedAbilities.Empty();
+
+		/* Save Each Ability */
+		SaveAbilityDelegate.BindLambda([this, ASASC, SaveData](const FGameplayAbilitySpec& AbilitySpec)
+		{
+			const FGameplayTag AbilityTag = ASASC->GetAbilityTagFromSpec(AbilitySpec);
+			UAbilityInfo* AbilityInfo = UASAbilitySystemBlueprintLibrary::GetAbilityInfo(this);
+			FASAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+			
+			FSavedAbility SavedAbility;
+			SavedAbility.GameplayAbility = Info.Ability;
+			SavedAbility.AbilityLevel = AbilitySpec.Level;
+			SavedAbility.AbilitySlot = ASASC->GetSlotFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityStatus = ASASC->GetStatusFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityTag = AbilityTag;
+			SavedAbility.AbilityType = Info.AbilityType;
+
+			SaveData->SavedAbilities.Add(SavedAbility);
+			
+			
+		});
+		ASASC->ForEachAbility(SaveAbilityDelegate);
+		
 		ASGameMode->SaveInGameProgressData(SaveData);
 	}
 }
