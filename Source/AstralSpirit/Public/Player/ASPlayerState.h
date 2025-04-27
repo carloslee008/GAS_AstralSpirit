@@ -12,6 +12,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32 /* StatValue */);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelChanged, int32 /* StatValue */, bool /* bLevelChanged */)
 
 /**
  * 
@@ -30,7 +31,7 @@ public:
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
-	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnLevelChanged OnLevelChangedDelegate;
 	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStatChanged OnSkillPointsChangedDelegate;
 
@@ -40,12 +41,12 @@ public:
 	FORCEINLINE int32 GetPlayerSkillPoints() const { return SkillPoints; }
 
 	void AddToXP(int32 InXP);
-	void AddToLevel(int32 InLevel);
+	void AddToLevel(int32 InLevel); // For level ups
 	void AddToAttributePoints(int32 InAttributePoints);
 	void AddToSkillPoints(int32 InSkillPoints);
 	
 	void SetXP(int32 InXP);
-	void SetLevel(int32 InLevel);
+	void SetLevel(int32 InLevel); // For loading in from disk
 	void SetAttributePoints(int32 InAttributePoints);
 	void SetSkillPoints(int32 InSkillPoints);
 protected:

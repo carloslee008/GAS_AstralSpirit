@@ -11,6 +11,7 @@
 #include "Player/ASPlayerController.h"
 #include "Player/ASPlayerState.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/ASAbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ASAttributeSet.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
@@ -53,9 +54,6 @@ void AASCharacter::PossessedBy(AController* NewController)
 	// Init ability actor info for the Server
 	InitAbilityActorInfo();
 	LoadProgress();
-
-	// TODO: Load in abilities from disk
-	AddCharacterAbilities();
 }
 
 void AASCharacter::LoadProgress()
@@ -65,15 +63,6 @@ void AASCharacter::LoadProgress()
 	{
 		ULoadMenuSaveGame* SaveData = ASGameMode->RetrieveInGameSaveData();
 		if (SaveData == nullptr) return;
-
-		/* Set Player Info upon loading */
-		if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
-		{
-			ASPlayerState->SetLevel(SaveData->PlayerLevel);
-			ASPlayerState->SetXP(SaveData->XP);
-			ASPlayerState->SetAttributePoints(SaveData->AttributePoints);
-			ASPlayerState->SetSkillPoints(SaveData->SkillPoints);
-		}
 		
 		if (SaveData->bFirstTimeLoadIn)
 		{
@@ -82,7 +71,16 @@ void AASCharacter::LoadProgress()
 		}
 		else
 		{
-			
+			// TODO: Load in abilities from disk
+			/* Set Player Info upon loading */
+			if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
+			{
+				ASPlayerState->SetLevel(SaveData->PlayerLevel);
+				ASPlayerState->SetXP(SaveData->XP);
+				ASPlayerState->SetAttributePoints(SaveData->AttributePoints);
+				ASPlayerState->SetSkillPoints(SaveData->SkillPoints);
+			}
+			UASAbilitySystemBlueprintLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 		}
 	}
 }

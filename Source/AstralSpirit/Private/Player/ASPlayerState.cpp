@@ -43,7 +43,7 @@ void AASPlayerState::AddToXP(int32 InXP)
 void AASPlayerState::AddToLevel(int32 InLevel)
 {
 	Level += InLevel;
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, true);
 }
 
 void AASPlayerState::AddToAttributePoints(int32 InAttributePoints)
@@ -67,7 +67,7 @@ void AASPlayerState::SetXP(int32 InXP)
 void AASPlayerState::SetLevel(int32 InLevel)
 {
 	Level = InLevel;
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, false);
 }
 
 void AASPlayerState::SetAttributePoints(int32 InAttributePoints)
@@ -89,7 +89,7 @@ void AASPlayerState::OnRep_XP(int32 OldXP)
 
 void AASPlayerState::OnRep_Level(int32 OldLevel)
 {
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, true);
 }
 
 void AASPlayerState::OnRep_AttributePoints(int32 OldAttributePoints)
