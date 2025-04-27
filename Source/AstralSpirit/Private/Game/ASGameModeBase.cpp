@@ -21,6 +21,8 @@ void AASGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	ULoadMenuSaveGame* LoadMenuSaveGame = Cast<ULoadMenuSaveGame>(SaveGameObject);
 	// Set Player name
 	LoadMenuSaveGame->PlayerName = LoadSlot->GetPlayerName();
+	// Set Player level
+	LoadMenuSaveGame->PlayerLevel = LoadSlot->GetPlayerLevel();
 	// Set Map Name
 	LoadMenuSaveGame->MapName = LoadSlot->GetMapName();
 	// Set Slot Status
