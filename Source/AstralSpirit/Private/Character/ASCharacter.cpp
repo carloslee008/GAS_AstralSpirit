@@ -231,7 +231,7 @@ void AASCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 			SavedAbility.AbilityTag = AbilityTag;
 			SavedAbility.AbilityType = Info.AbilityType;
 
-			SaveData->SavedAbilities.Add(SavedAbility);
+			SaveData->SavedAbilities.AddUnique(SavedAbility);
 			
 			
 		});

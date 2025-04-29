@@ -49,13 +49,10 @@ void UASAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(ULoadMenuSaveG
 		}
 		else if (Data.AbilityType == FASGameplayTags::Get().Abilities_Type_Passive)
 		{
+			GiveAbility(LoadedAbilitySpec);
 			if (Data.AbilityStatus.MatchesTagExact(FASGameplayTags::Get().Abilities_Status_Equipped))
 			{
-				GiveAbilityAndActivateOnce(LoadedAbilitySpec);
-			}
-			else
-			{
-				GiveAbility(LoadedAbilitySpec);	
+				TryActivateAbility(LoadedAbilitySpec.Handle);	
 			}
 		}
 	}
@@ -69,8 +66,9 @@ void UASAbilitySystemComponent::AddCharacterPassiveAbilities(
 	for (TSubclassOf<UGameplayAbility> AbilityClass : StartupPassiveAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-		GiveAbilityAndActivateOnce(AbilitySpec);
 		AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Equipped);
+		GiveAbilityAndActivateOnce(AbilitySpec);
+		
 	}
 }
 
@@ -388,6 +386,8 @@ void UASAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepla
 					TryActivateAbility(AbilitySpec->Handle);
 					MulticastActivatePassiveEffect(AbilityTag, true);
 				}
+				AbilitySpec->DynamicAbilityTags.RemoveTag(GetStatusFromSpec(*AbilitySpec));
+				AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_Equipped);
 			}
 			AssignSlotToAbility(*AbilitySpec, Slot);
 			if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))

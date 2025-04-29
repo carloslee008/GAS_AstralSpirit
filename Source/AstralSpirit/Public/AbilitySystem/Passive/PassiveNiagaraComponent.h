@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"
 #include "PassiveNiagaraComponent.generated.h"
 
+class UASAbilitySystemComponent;
 /**
  * 
  */
@@ -23,5 +24,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void OnPassiveActivate(const FGameplayTag& AbilityTag, bool bActivate);
+
+	void ActivateIfEquipped(UASAbilitySystemComponent* ASASC);
 	
 };

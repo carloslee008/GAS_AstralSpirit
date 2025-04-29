@@ -4,6 +4,7 @@
 #include "AbilitySystem/Passive/PassiveNiagaraComponent.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ASGameplayTags.h"
 #include "AbilitySystem/ASAbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
 
@@ -19,6 +20,7 @@ void UPassiveNiagaraComponent::BeginPlay()
 	if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner())))
 	{
 		ASASC->ActivatePassiveEffect.AddUObject(this, &UPassiveNiagaraComponent::OnPassiveActivate);
+		ActivateIfEquipped(ASASC);
 	}
 	else if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetOwner()))
 	{
@@ -27,7 +29,9 @@ void UPassiveNiagaraComponent::BeginPlay()
 			if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner())))
 			{
 				ASASC->ActivatePassiveEffect.AddUObject(this, &UPassiveNiagaraComponent::OnPassiveActivate);
+				ActivateIfEquipped(ASASC);
 			}
+			
 		});
 	}
 }
@@ -43,6 +47,18 @@ void UPassiveNiagaraComponent::OnPassiveActivate(const FGameplayTag& AbilityTag,
 		else
 		{
 			Deactivate();
+		}
+	}
+}
+
+void UPassiveNiagaraComponent::ActivateIfEquipped(UASAbilitySystemComponent* ASASC)
+{
+	const bool bStartupAbilitiesGiven = ASASC->bStartupAbilitiesGiven;
+	if (bStartupAbilitiesGiven)
+	{
+		if (ASASC->GetStatusFromAbilityTag(PassiveSkillTag) == FASGameplayTags::Get().Abilities_Status_Equipped)
+		{
+			Activate();
 		}
 	}
 }
