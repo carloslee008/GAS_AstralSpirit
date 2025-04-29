@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "ASAbilitySystemComponent.generated.h"
 
+class ULoadMenuSaveGame;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* AssetTags */)
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
@@ -32,6 +33,7 @@ public:
 	FActivatePassiveEffect ActivatePassiveEffect;
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
+	void AddCharacterAbilitiesFromSaveData(ULoadMenuSaveGame* SaveData);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities);
 
 	bool bStartupAbilitiesGiven = false;

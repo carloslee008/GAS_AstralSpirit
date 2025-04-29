@@ -9,6 +9,7 @@
 #include "AbilitySystem/Abilities/ASGameplayAbility.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "AstralSpirit/ASLogChannels.h"
+#include "Game/LoadMenuSaveGame.h"
 #include "Interaction/PlayerInterface.h"
 
 void UASAbilitySystemComponent::AbilityActorInfoSet()
@@ -32,6 +33,36 @@ void UASAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<U
 	AbilitiesGivenDelegate.Broadcast();
 }
 
+void UASAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(ULoadMenuSaveGame* SaveData)
+{
+	for (const FSavedAbility& Data : SaveData->SavedAbilities)
+	{
+		const TSubclassOf<UGameplayAbility> LoadedAbilityClass = Data.GameplayAbility;
+
+		FGameplayAbilitySpec LoadedAbilitySpec = FGameplayAbilitySpec(LoadedAbilityClass, Data.AbilityLevel);
+
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilitySlot);
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilityStatus);
+		if (Data.AbilityType == FASGameplayTags::Get().Abilities_Type_Pressable)
+		{
+			GiveAbility(LoadedAbilitySpec);
+		}
+		else if (Data.AbilityType == FASGameplayTags::Get().Abilities_Type_Passive)
+		{
+			if (Data.AbilityStatus.MatchesTagExact(FASGameplayTags::Get().Abilities_Status_Equipped))
+			{
+				GiveAbilityAndActivateOnce(LoadedAbilitySpec);
+			}
+			else
+			{
+				GiveAbility(LoadedAbilitySpec);	
+			}
+		}
+	}
+	bStartupAbilitiesGiven = true;
+	AbilitiesGivenDelegate.Broadcast();
+}
+
 void UASAbilitySystemComponent::AddCharacterPassiveAbilities(
 	const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities)
 {
@@ -39,6 +70,7 @@ void UASAbilitySystemComponent::AddCharacterPassiveAbilities(
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		GiveAbilityAndActivateOnce(AbilitySpec);
+		AbilitySpec.DynamicAbilityTags.AddTag(FASGameplayTags::Get().Abilities_Status_Equipped);
 	}
 }
 

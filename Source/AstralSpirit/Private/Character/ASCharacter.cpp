@@ -72,7 +72,11 @@ void AASCharacter::LoadProgress()
 		}
 		else
 		{
-			// TODO: Load in abilities from disk
+			// Load in abilities from disk
+			if (UASAbilitySystemComponent* ASASC = Cast<UASAbilitySystemComponent>(AbilitySystemComponent))
+			{
+				ASASC->AddCharacterAbilitiesFromSaveData(SaveData);
+			}
 			/* Set Player Info upon loading */
 			if (AASPlayerState* ASPlayerState = Cast<AASPlayerState>(GetPlayerState()))
 			{
