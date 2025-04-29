@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interaction/SaveInterface.h"
 #include "Checkpoint.generated.h"
 
 class USphereComponent;
@@ -11,11 +12,14 @@ class USphereComponent;
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API ACheckpoint : public APlayerStart
+class ASTRALSPIRIT_API ACheckpoint : public APlayerStart, public ISaveInterface
 {
 	GENERATED_BODY()
 public:
 	ACheckpoint(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(BlueprintReadOnly, SaveGame) // SaveGame makes this serializable
+	bool bReached = false;
 
 protected:
 
