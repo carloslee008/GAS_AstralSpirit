@@ -4,6 +4,7 @@
 #include "Game/ASGameModeBase.h"
 
 #include "EngineUtils.h"
+#include "AstralSpirit/ASLogChannels.h"
 #include "Game/ASGameInstance.h"
 #include "Game/LoadMenuSaveGame.h"
 #include "GameFramework/PlayerStart.h"
@@ -82,7 +83,7 @@ void AASGameModeBase::SaveInGameProgressData(ULoadMenuSaveGame* SaveObject)
 	UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameLoadSlotIndex);
 }
 
-void AASGameModeBase::SaveWorldState(UWorld* World)
+void AASGameModeBase::SaveWorldState(UWorld* World) const
 {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
@@ -132,6 +133,51 @@ void AASGameModeBase::SaveWorldState(UWorld* World)
 		}
 		UGameplayStatics::SaveGameToSlot(SaveGame, ASGameInstance->LoadSlotName, ASGameInstance->LoadSlotIndex);
 	}
+}
+
+void AASGameModeBase::LoadWorldState(UWorld* World) const
+{
+	FString WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	UASGameInstance* ASGameInstance = Cast<UASGameInstance>(GetGameInstance());
+	check(ASGameInstance);
+
+	if (UGameplayStatics::DoesSaveGameExist(ASGameInstance->LoadSlotName, ASGameInstance->LoadSlotIndex))
+	{
+		ULoadMenuSaveGame* SaveGame = Cast<ULoadMenuSaveGame>(UGameplayStatics::LoadGameFromSlot(ASGameInstance->LoadSlotName, ASGameInstance->LoadSlotIndex));
+		if (SaveGame == nullptr)
+		{
+			UE_LOG(LogAS, Error, TEXT("Failed to load slot"));
+			return;
+		}
+		for (FActorIterator It(World); It; ++It)
+		{
+			AActor* Actor = *It;
+
+			if (!Actor->Implements<USaveInterface>()) continue;
+
+			for (FSavedActor SavedActor : SaveGame->GetSavedMapWithMapName(WorldName).SavedActors)
+			{
+				if (SavedActor.ActorName == Actor->GetFName())
+				{
+					if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+					{
+						Actor->SetActorTransform(SavedActor.Transform);
+					}
+
+					FMemoryReader MemoryReader(SavedActor.Bytes);
+					FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+					Archive.ArIsSaveGame = true;
+					Actor->Serialize(Archive); // Converts binary bytes back into variables
+
+					ISaveInterface::Execute_LoadActor(Actor);
+				}
+			}
+			
+		}
+	}
+	
 }
 
 void AASGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)

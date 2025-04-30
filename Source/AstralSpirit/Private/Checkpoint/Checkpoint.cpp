@@ -4,7 +4,9 @@
 #include "Checkpoint/Checkpoint.h"
 
 #include "Components/SphereComponent.h"
+#include "Game/ASGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 ACheckpoint::ACheckpoint(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -23,6 +25,14 @@ ACheckpoint::ACheckpoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Overlap only with pawn
 }
 
+void ACheckpoint::LoadActor_Implementation()
+{
+	if (bReached)
+	{
+		Glow();
+	}
+}
+
 void ACheckpoint::BeginPlay()
 {
 	Super::BeginPlay();
@@ -33,10 +43,13 @@ void ACheckpoint::BeginPlay()
 void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
 	if (OtherActor->Implements<UPlayerInterface>())
 	{
+		bReached = true;
+		if (AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this)))
+		{
+			ASGameMode->SaveWorldState(GetWorld());
+		}
 		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		Glow();
 	}
@@ -44,6 +57,7 @@ void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 
 void ACheckpoint::Glow()
 {
+	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this);
 	CheckpointMesh->SetMaterial(0, DynamicMaterialInstance);
 	StartGlowTimeline(DynamicMaterialInstance);

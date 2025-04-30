@@ -55,6 +55,11 @@ void AASCharacter::PossessedBy(AController* NewController)
 	// Init ability actor info for the Server
 	InitAbilityActorInfo();
 	LoadProgress();
+
+	if (AASGameModeBase* ASGameModeBase = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ASGameModeBase->LoadWorldState(GetWorld());
+	}
 }
 
 void AASCharacter::LoadProgress()
