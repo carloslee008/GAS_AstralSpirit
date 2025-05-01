@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/ASCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "Interaction/HighlightInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "ASEnemy.generated.h"
 
@@ -15,14 +16,14 @@ class AASAIController;
  * 
  */
 UCLASS()
-class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterface
+class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 	AASEnemy();
 	virtual void PossessedBy(AController* NewController) override;
 	
 public:
-	//~ Begin Enemy Interface.
+	//~ Begin Highlight Interface.
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	//~ End Enemy Interface.
@@ -30,9 +31,12 @@ public:
 	//~ Begin Combat Interface
 	virtual int32 GetPlayerLevel_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;
+	//~ End Combat Interface
+
+	//~ Begin Enemy Interface
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
-	//~ End Combat Interface
+	//~ End Enemy Interface
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
