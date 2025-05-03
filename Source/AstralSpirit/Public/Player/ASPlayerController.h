@@ -10,6 +10,20 @@
 class IHighlightInterface;
 class AMagicCircle;
 class UNiagaraSystem;
+class UDamageTextComponent;
+class USplineComponent;
+class UASAbilitySystemComponent;
+class UASInputConfig;
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingObject,
+	NotTargeting
+};
 
 USTRUCT(BlueprintType)
 struct FCameraOccludedActor
@@ -29,14 +43,6 @@ struct FCameraOccludedActor
 	bool IsOccluded = false;
 	
 };
-
-class UDamageTextComponent;
-class USplineComponent;
-class UASAbilitySystemComponent;
-class UASInputConfig;
-class UInputMappingContext;
-class UInputAction;
-struct FInputActionValue;
 
 /**
  * 
@@ -125,9 +131,14 @@ private:
 	void Move(const FInputActionValue& InputActionValue);
 
 	void CursorTrace();
-	TScriptInterface<IHighlightInterface> LastActor;
-	TScriptInterface<IHighlightInterface> ThisActor;
+	// TScriptInterface<IHighlightInterface> LastActor;
+	// TScriptInterface<IHighlightInterface> ThisActor;
+	
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
 	FHitResult CursorHit;
+	void HighlightActor(AActor* InActor);
+	void UnHighlightActor(AActor* InActor);
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -145,7 +156,8 @@ private:
 	float FollowTime = 0.f;
 	float ShortPressThreshold = 0.5f;
 	bool bAutoRunning = false;
-	bool bIsTargeting = false;
+	// bool bIsTargeting = false;
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;

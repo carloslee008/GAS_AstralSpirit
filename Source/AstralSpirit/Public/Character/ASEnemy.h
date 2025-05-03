@@ -24,8 +24,8 @@ class ASTRALSPIRIT_API AASEnemy : public AASCharacterBase, public IEnemyInterfac
 	
 public:
 	//~ Begin Highlight Interface.
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
 	//~ End Enemy Interface.
 
 	//~ Begin Combat Interface

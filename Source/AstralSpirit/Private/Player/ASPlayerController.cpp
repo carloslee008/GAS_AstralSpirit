@@ -19,6 +19,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Input/ASInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 #include "Interaction/HighlightInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/DamageTextComponent.h"
@@ -112,19 +113,17 @@ void AASPlayerController::CursorTrace()
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_CursorTrace))
 	{
-		if (LastActor) LastActor->UnHighlightActor();
-		if (ThisActor) ThisActor->UnHighlightActor();
+		UnHighlightActor(LastActor);
+		UnHighlightActor(ThisActor);
 		LastActor = nullptr;
 		ThisActor = nullptr;
 		return;
 	}
 	// Ignore characters when casting magic circle
 	const ECollisionChannel TraceChannel = IsValid(MagicCircle) ? ECC_ExcludeCharacters : ECC_Visibility;
-	
+
 	GetHitResultUnderCursor(TraceChannel, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
-	LastActor = ThisActor;
-	ThisActor = CursorHit.GetActor();
 
 	/**
 	 * Line trace from cursor possible scenarios:
@@ -140,10 +139,35 @@ void AASPlayerController::CursorTrace()
 	 * - Do nothing
 	 */
 	
+	LastActor = ThisActor;
+	if (IsValid(CursorHit.GetActor()) && CursorHit.GetActor()->Implements<UHighlightInterface>()) // Cursor on highlight-able actor
+	{
+		ThisActor = CursorHit.GetActor();
+	}
+	else
+	{
+		ThisActor = nullptr; // Case A - no actor highlighted
+	}
 	if (LastActor != ThisActor)
 	{
-		if (ThisActor) ThisActor->HighlightActor(); // Case B and D
-		if (LastActor) LastActor->UnHighlightActor(); // Case C and D
+		HighlightActor(ThisActor); // Case B and D
+		UnHighlightActor(LastActor); // Case C and D
+	}
+}
+
+void AASPlayerController::HighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_HighlightActor(InActor);
+	}
+}
+
+void AASPlayerController::UnHighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_UnHighlightActor(InActor);
 	}
 }
 
@@ -155,8 +179,15 @@ void AASPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 	}
 	if (InputTag.MatchesTagExact(FASGameplayTags::Get().InputTag_LMB))
 	{
-		bIsTargeting = ThisActor ? true : false; // If hovering highlighted actor, true
+		if (IsValid(ThisActor))
+		{
+			TargetingStatus = ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::NotTargeting;
+		}
 		bAutoRunning = false;
+	}
+	else
+	{
+		TargetingStatus = ETargetingStatus::NotTargeting;
 	}
 	if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
 }
@@ -186,7 +217,7 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	{
 		GetASC()->AbilityInputTagReleased(InputTag);
 	}
-	if (!bIsTargeting && !bShiftKeyDown) // Click to move if not hovering an actor or shift-clicking
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy && !bShiftKeyDown) // Click to move if not hovering an actor or shift-clicking
 	{
 		APawn* ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
@@ -209,7 +240,7 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 			}
 		}
 		FollowTime = 0.f;
-		bIsTargeting = false;
+		TargetingStatus = ETargetingStatus::NotTargeting;
 	}
 }
 
@@ -233,7 +264,7 @@ void AASPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	/**
 	 * For LMB
 	 **/
-	if (bIsTargeting || bShiftKeyDown) // If hovering highlightable object OR shift-clicking
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftKeyDown) // If hovering highlightable object OR shift-clicking
 	{
 		if (GetASC())
 		{
