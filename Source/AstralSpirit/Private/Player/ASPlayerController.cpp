@@ -222,6 +222,14 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		APawn* ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
+			if (IsValid(ThisActor) && ThisActor->Implements<UHighlightInterface>())
+			{
+				IHighlightInterface::Execute_SetMoveToLocation(ThisActor, CachedDestination);
+			}
+			else if (GetASC() && !GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputReleased))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
+			}
 			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
 			{
 				Spline->ClearSplinePoints();
@@ -232,11 +240,6 @@ void AASPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				// Checks to see there's at least one path point in the array
 				CachedDestination = NavPath->PathPoints.IsEmpty() ? ControlledPawn->GetActorLocation() : NavPath->PathPoints.Last(); 
 				bAutoRunning = true;
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
-			}
-			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FASGameplayTags::Get().Player_Block_InputReleased))
-			{
-				return;
 			}
 		}
 		FollowTime = 0.f;
