@@ -26,8 +26,11 @@ public:
 	
 	/* End Save Interface */
 
-	UPROPERTY(BlueprintReadOnly, SaveGame) // SaveGame makes this serializable
+	UPROPERTY(BlueprintReadWrite, SaveGame) // SaveGame makes this serializable
 	bool bReached = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bBindOverlapCallback = true;
 
 protected:
 
@@ -51,6 +54,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartGlowTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
 
+	UFUNCTION(BlueprintCallable)
 	void Glow();
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
