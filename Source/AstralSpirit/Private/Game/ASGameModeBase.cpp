@@ -83,7 +83,7 @@ void AASGameModeBase::SaveInGameProgressData(ULoadMenuSaveGame* SaveObject)
 	UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameLoadSlotIndex);
 }
 
-void AASGameModeBase::SaveWorldState(UWorld* World) const
+void AASGameModeBase::SaveWorldState(UWorld* World, const FString& DestinationMapAssetName) const
 {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
@@ -93,6 +93,11 @@ void AASGameModeBase::SaveWorldState(UWorld* World) const
 
 	if (ULoadMenuSaveGame* SaveGame = GetSaveSlotData(ASGameInstance->LoadSlotName, ASGameInstance->LoadSlotIndex))
 	{
+		if (DestinationMapAssetName != FString(""))
+		{
+			SaveGame->MapAssetName = DestinationMapAssetName;
+			SaveGame->MapName = GetMapNameFromMapAssetName(DestinationMapAssetName);
+		}
 		if (!SaveGame->HasMap(WorldName))
 		{
 			FSavedMap NewSavedMap;
@@ -185,6 +190,18 @@ void AASGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 	FString SlotName = Slot->GetLoadSlotName();
 	int32 SlotIndex = Slot->SlotIndex;
 	UGameplayStatics::OpenLevelBySoftObjectPtr(Slot, Maps.FindChecked(Slot->GetMapName()));
+}
+
+FString AASGameModeBase::GetMapNameFromMapAssetName(const FString& MapAssetName) const
+{
+	for (auto& Map : Maps)
+	{
+		if (Map.Value.ToSoftObjectPath().GetAssetName() == MapAssetName)
+		{
+			return Map.Key;
+		}
+	}
+	return FString();
 }
 
 AActor* AASGameModeBase::ChoosePlayerStart_Implementation(AController* Player)

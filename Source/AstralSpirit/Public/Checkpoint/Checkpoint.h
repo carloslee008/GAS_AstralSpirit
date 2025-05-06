@@ -23,7 +23,6 @@ public:
 	/* Save Interface */
 	virtual bool ShouldLoadTransform_Implementation() override { return false; }
 	virtual void LoadActor_Implementation() override;
-	
 	/* End Save Interface */
 
 	UPROPERTY(BlueprintReadWrite, SaveGame) // SaveGame makes this serializable
@@ -59,9 +58,8 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> CheckpointMesh;
-	
-private:
-	
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
+	
 };
