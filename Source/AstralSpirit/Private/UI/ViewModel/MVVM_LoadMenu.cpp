@@ -43,6 +43,11 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 {
 	// Get reference to the current game mode
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (!IsValid(ASGameMode))
+	{
+		GEngine->AddOnScreenDebugMessage(1, 15.f, FColor::Emerald, FString("Please switch to Single Player."));
+		return;
+	}
 
 	// Set the default map name on the selected slot
 	LoadSlots[Slot]->SetMapName(ASGameMode->DefaultMapName);
@@ -120,6 +125,7 @@ void UMVVM_LoadMenu::PlayButtonPressed()
 void UMVVM_LoadMenu::LoadData()
 {
 	AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (!IsValid(ASGameMode)) return;
 	for (const TTuple<int32, UMVVM_LoadSlot*> LoadSlot : LoadSlots)
 	{
 		ULoadMenuSaveGame* SaveObject = ASGameMode->GetSaveSlotData(LoadSlot.Value->GetLoadSlotName(), LoadSlot.Key);
