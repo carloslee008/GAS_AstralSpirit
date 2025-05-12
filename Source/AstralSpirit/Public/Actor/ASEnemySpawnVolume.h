@@ -7,6 +7,7 @@
 #include "Interaction/SaveInterface.h"
 #include "ASEnemySpawnVolume.generated.h"
 
+class AASEnemySpawnPoint;
 class UBoxComponent;
 
 UCLASS()
@@ -31,6 +32,9 @@ protected:
 
 	UFUNCTION()
 	virtual void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+	TArray<AASEnemySpawnPoint*> SpawnPoints;
 
 private:
 

@@ -3,7 +3,9 @@
 
 #include "Actor/ASEnemySpawnVolume.h"
 
+#include "Actor/ASEnemySpawnPoint.h"
 #include "Components/BoxComponent.h"
+#include "Interaction/PlayerInterface.h"
 
 // Sets default values
 AASEnemySpawnVolume::AASEnemySpawnVolume()
@@ -24,7 +26,7 @@ void AASEnemySpawnVolume::LoadActor_Implementation()
 {
 	if (bReached)
 	{
-		Destroy();
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
@@ -39,7 +41,15 @@ void AASEnemySpawnVolume::BeginPlay()
 void AASEnemySpawnVolume::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	if (!OtherActor->Implements<UPlayerInterface>()) return;
 	bReached = true;
+	for (AASEnemySpawnPoint* Point : SpawnPoints)
+	{
+		if (IsValid(Point))
+		{
+			Point->SpawnEnemy();
+		}
+	}
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
