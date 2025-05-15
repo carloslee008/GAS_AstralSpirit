@@ -64,6 +64,9 @@ void UMVVM_LoadMenu::NewSlotButtonPressed(int32 Slot, const FString& EnteredName
 	// Set player location
 	LoadSlots[Slot]->PlayerStartTag = ASGameMode->DefaultPlayerStartTag;
 
+	// Set map asset name
+	LoadSlots[Slot]->MapAssetName = ASGameMode->DefaultMap.ToSoftObjectPath().GetAssetName();
+
 	// Save the slot data using the game mode's method
 	ASGameMode->SaveSlotData(LoadSlots[Slot], Slot);
 	

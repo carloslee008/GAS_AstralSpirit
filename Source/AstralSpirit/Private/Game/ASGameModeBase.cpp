@@ -7,6 +7,7 @@
 #include "AstralSpirit/ASLogChannels.h"
 #include "Game/ASGameInstance.h"
 #include "Game/LoadMenuSaveGame.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/PlayerStart.h"
 #include "Interaction/SaveInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,6 +30,8 @@ void AASGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	LoadMenuSaveGame->PlayerLevel = LoadSlot->GetPlayerLevel();
 	// Set Map Name
 	LoadMenuSaveGame->MapName = LoadSlot->GetMapName();
+	// Set Map Asset Name
+	LoadMenuSaveGame->MapAssetName = LoadSlot->MapAssetName;
 	// Set Slot Status
 	LoadMenuSaveGame->SaveSlotStatus = Taken;
 	// Set Player Start Location
@@ -226,6 +229,14 @@ AActor* AASGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		return SelectedActor;
 	}
 	return nullptr;
+}
+
+void AASGameModeBase::PlayerDied(ACharacter* DeadCharacter)
+{
+	ULoadMenuSaveGame* SaveGame = RetrieveInGameSaveData();
+	if (!IsValid(SaveGame)) return;
+
+	UGameplayStatics::OpenLevel(DeadCharacter, FName(SaveGame->MapAssetName));
 }
 
 void AASGameModeBase::BeginPlay()

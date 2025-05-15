@@ -94,6 +94,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName TailSocketName;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bDead;
 		
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
