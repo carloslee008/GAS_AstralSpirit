@@ -166,6 +166,13 @@ UAbilityInfo* UASAbilitySystemBlueprintLibrary::GetAbilityInfo(const UObject* Wo
 	return ASGameMode->AbilityInfo;
 }
 
+ULootTiers* UASAbilitySystemBlueprintLibrary::GetLootTiers(const UObject* WorldContextObject)
+{
+	const AASGameModeBase* ASGameMode = Cast<AASGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (ASGameMode == nullptr) return nullptr;
+	return ASGameMode->LootTiers;
+}
+
 int32 UASAbilitySystemBlueprintLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,
                                                                     ECharacterClass CharacterClass, int32 CharacterLevel)
 {

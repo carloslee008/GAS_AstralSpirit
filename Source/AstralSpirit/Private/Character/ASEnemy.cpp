@@ -164,6 +164,7 @@ void AASEnemy::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
 	if (ASAIController) ASAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
+	SpawnLoot();
 	Super::Die(DeathImpulse);
 }
 

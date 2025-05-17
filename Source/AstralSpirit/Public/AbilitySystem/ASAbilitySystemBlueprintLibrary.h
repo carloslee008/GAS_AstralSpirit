@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ASAbilitySystemBlueprintLibrary.generated.h"
 
+class ULootTiers;
 class ULoadMenuSaveGame;
 class UAbilityInfo;
 struct FWidgetControllerParams;
@@ -58,6 +59,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="ASAbilitySystemBlueprintLibrary|CharacterClassDefaults")
 	static UAbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category="ASAbilitySystemBlueprintLibrary|CharacterClassDefaults")
+	static ULootTiers* GetLootTiers(const UObject* WorldContextObject);
 
 	/*
 	 * Effect Context Getters

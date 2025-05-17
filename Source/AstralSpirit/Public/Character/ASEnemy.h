@@ -75,5 +75,8 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AASAIController> ASAIController;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnLoot();
 	
 };
