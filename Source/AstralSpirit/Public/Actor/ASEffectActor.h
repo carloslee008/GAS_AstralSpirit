@@ -32,10 +32,32 @@ class ASTRALSPIRIT_API AASEffectActor : public AActor
 	
 public:	
 	AASEffectActor();
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	bool bRotates = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float RotationRate = 45.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	bool bSinusoidalMovement = false;
+
+	UFUNCTION(BlueprintCallable)
+	void StartSinusoidalMovement();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float SineAmplitude = 1.f; // 2 * PI
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float SinePeriod = 6.28318f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	FVector InitialLocation;
+	
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
@@ -74,4 +96,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effects")
 	float ActorLevel = 1.f;
+
+private:
+	
+	float RunningTime = 0.f;
+	void ItemMovement(float DeltaTime);
 };
